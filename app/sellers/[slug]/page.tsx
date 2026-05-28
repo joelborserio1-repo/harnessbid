@@ -1,0 +1,42 @@
+import { SellerStorefrontPage } from "@/components/seller-storefront"
+import { EmptyStatePage } from "@/components/static-pages"
+import { getSellerStorefront } from "@/lib/supabase/queries"
+import { Building2, Search } from "lucide-react"
+
+export default async function SellerPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const storefront = await getSellerStorefront(slug)
+
+  if (storefront.error) {
+    return (
+      <EmptyStatePage
+        icon={Search}
+        eyebrow="Seller unavailable"
+        title="Seller profile could not load"
+        description="The seller storefront is available, but live seller data did not load cleanly. Try browsing the marketplace or check this profile again shortly."
+        primary={{ label: "Browse marketplace", href: "/marketplace" }}
+        secondary={{ label: "Back to homepage", href: "/", variant: "outline" }}
+      />
+    )
+  }
+
+  if (!storefront.data) {
+    const name = slug.split("-").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ")
+    return (
+      <EmptyStatePage
+        icon={Building2}
+        eyebrow="Seller profile"
+        title={`${name} is not public yet`}
+        description="Seller storefronts appear after the account is active, verified, and available through Supabase public read policies."
+        primary={{ label: "Browse marketplace", href: "/marketplace" }}
+        secondary={{ label: "Contact HarnessBid", href: "/contact", variant: "outline" }}
+      />
+    )
+  }
+
+  return <SellerStorefrontPage storefront={storefront.data} />
+}

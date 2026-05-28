@@ -1,0 +1,13 @@
+{
+    "version": "1.0",
+    "name": "HarnessBid",
+    "description": "TODO",
+    "icons": {
+        "60": "https://harnessbid.com/site/..//template/user/lafusidlbfjkds/favicon/firefox_app_60x60.png?ver=K3zVr",
+        "128": "https://harnessbid.com/site/..//template/user/lafusidlbfjkds/favicon/firefox_app_128x128.png?ver=K3zVr"
+    },
+    "developer": {
+        "name": "RAZOR Web Design",
+        "url": "http://razorweb.co.nz"
+    }
+}

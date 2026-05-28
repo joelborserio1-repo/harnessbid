@@ -1,0 +1,19 @@
+{
+    "name": "HarnessBid",
+    "short_name": "HarnessBid",
+    "icons": [
+        {
+            "src": "https://harnessbid.com/site/..//template/user/lafusidlbfjkds/favicon/android-chrome-192x192.png?ver=K3zVr",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://harnessbid.com/site/..//template/user/lafusidlbfjkds/favicon/android-chrome-256x256.png?ver=K3zVr",
+            "sizes": "256x256",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#4972ab",
+    "background_color": "#4972ab",
+    "display": "standalone"
+}
