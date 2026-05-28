@@ -1,0 +1,50 @@
+/* Custom CSS */
+.footer {
+	background-color:[master_colour];
+	border-color:[master_shade];
+}
+.copyright {
+	background-color:[secondary_shade];
+}
+.header-title {
+	background-color:[secondary_shade];
+}
+.header-title h1 {
+	color:[text_secondary];
+}
+.banner h1, .banner .h1 {
+	color:[text_secondary];
+}
+
+/* Type */
+h2, .h2, h3, .h3, .h4, .h5, h4, h5 {
+	color:[master_colour];
+}
+a:not([class]) {
+	color:[master_colour];
+}
+.button {
+	background-color:[third_colour];
+	border-color:[third_colour];
+}
+.button:hover {
+	background-color:[fourth_colour];
+	border-color:[fourth_colour];
+}
+
+/* Nav */
+ul.menu .menulink {
+	border-color:[master_shade];
+}
+ul.menu .menulink:hover {
+	background-color:[master_shade];
+}
+ul.menu .mobile-nav + li {
+	border-color:[master_shade];
+}
+.navigation {
+	background-color:[master_colour];
+	border-color:[secondary_colour];
+}
+
+[custom_css]

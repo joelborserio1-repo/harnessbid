@@ -1,0 +1,131 @@
+/* THEME -- DEFAULT / RAZOR */
+.navbar-default,
+.navbar-header {
+	background-color:#753594;
+	background-image:url(../images/bg-purple.jpg);
+}
+
+/* THEME -- CMS BLUE */
+body.mode-web .navbar-header,
+body.mode-web .navbar-default {
+	background-color:#247ABF;
+	background-image:url(../images/bg-blue.jpg);
+}
+body.mode-web.bg-fill {
+	background-color:#247ABF;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("../images/bg-blob-slow-blue.svg");
+    background-size: cover;
+}
+body.mode-web h1 a,
+body.mode-web h2 a,
+body.mode-web h3 a,
+body.mode-web h4 a,
+body.mode-web h5 a,
+body.mode-web h6 a {
+	color:#247ABF;
+}
+body.mode-web .logo {
+	background-image:url(../images/logo.cms.svg);
+}
+body.theme-light .user-info, body.theme-light .contact, body.theme-light .copyright, body.theme-light .contact a {
+	color:#000;
+}
+body.theme-light .sidebar ul li a {
+	color:#247ABF;
+}
+body.theme-light .sidebar ul li {
+	border-color:#CCC;
+}
+body.theme-light .navbar-header a,
+body.theme-light .navbar-header button {
+	color:#000;
+	border-color:#000;
+}
+body.theme-light .navbar-header .icon-bar {
+	background-color:#247ABF;
+}
+
+/* THEME -- LIGHT */
+body.theme-light .navbar-header,
+body.theme-light .navbar-default {
+    background-color: #EEE;
+    background-image: url("../images/theme/bg-light.jpg");
+}
+body.theme-light h1 a,
+body.theme-light h2 a,
+body.theme-light h3 a,
+body.theme-light h4 a,
+body.theme-light h5 a,
+body.theme-light h6 a {
+	color:#337ab7;
+}
+body.theme-light .user-info, body.theme-light .contact, body.theme-light .copyright, body.theme-light .contact a {
+	color:#000;
+}
+body.theme-light .sidebar ul li a {
+	color:#337ab7;
+}
+body.theme-light .sidebar ul li {
+	border-color:#CCC;
+}
+body.theme-light .navbar-header a,
+body.theme-light .navbar-header button {
+	color:#000;
+	border-color:#000;
+}
+body.theme-light .navbar-header .icon-bar {
+	background-color:#337ab7;
+}
+
+/* THEME -- DARK */
+body.theme-dark .navbar-header,
+body.theme-dark .navbar-default {
+    background-color: #222;
+    background-image: url("../images/theme/bg-dark.jpg");
+}
+body.theme-dark h1 a,
+body.theme-dark h2 a,
+body.theme-dark h3 a,
+body.theme-dark h4 a,
+body.theme-dark h5 a,
+body.theme-dark h6 a {
+	color:#337ab7;
+}
+
+/* THEME -- GLOSS */
+body.theme-gloss .navbar-header,
+body.theme-gloss .navbar-default {
+    background-color: #0926b1;
+    background-image: url("../images/theme/bg-gloss.jpg");
+}
+body.theme-gloss h1 a,
+body.theme-gloss h2 a,
+body.theme-gloss h3 a,
+body.theme-gloss h4 a,
+body.theme-gloss h5 a,
+body.theme-gloss h6 a {
+	color:#0926b1;
+}
+
+/* THEME -- NATURE */
+body.theme-nature .navbar-header,
+body.theme-nature .navbar-default {
+    background-color: #3c7911;
+    background-image: url("../images/theme/bg-nature.jpg");
+}
+body.theme-nature .navbar-default .copyright p,
+body.theme-nature .navbar-default .copyright p {
+	color:#FFF;
+}
+body.theme-nature h1 a,
+body.theme-nature h2 a,
+body.theme-nature h3 a,
+body.theme-nature h4 a,
+body.theme-nature h5 a,
+body.theme-nature h6 a {
+	color:#3c7911;
+}

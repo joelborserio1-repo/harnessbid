@@ -1,0 +1,299 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+* {
+  margin:0;
+  padding:0;
+}
+body,html {
+	font-size: 16px;
+	font-family:'Open Sans', sans-serif;
+	font-weight:400;
+	color:#000;
+	background-color:#F8F8F8;
+	padding:20px;
+	box-sizing: border-box;
+}
+#header {
+  width:100%;
+  padding:0 0 20px;
+}
+#header .logo {
+  vertical-align:top;
+  max-width:300px;
+  width:100%;
+}
+#container {
+	background-color:#FFF;
+	padding:20px;
+	width:100%;
+	max-width: 600px;
+	border:2px solid #EEE;
+	box-sizing:border-box;
+}
+#subject {
+  margin-top:10px;
+  margin-bottom:10px;
+}
+#msgbody {
+   padding:3px 0px;
+   margin:0;
+}
+#footer {
+  margin-top:15px;
+}
+#copyright {
+  margin-top:10px;
+  font-size:12px;
+  color:#999;
+}
+
+/*TEXT*/
+.medium {
+  font-size:18px;
+}
+.regular {
+  font-size:14px;
+}
+.small {
+  font-size:12px;
+}
+.mini {
+  font-size:10px;
+}
+a {
+ color:#9A9A9A;
+ text-decoration:none;
+}
+a.red {
+  color:#C00;
+}
+a:hover {
+  text-decoration:underline;
+}
+h1,h2,h3 {
+  padding:0;
+  margin:0;
+  font-weight:300;
+}
+h1 {
+  font-size:36px;
+  color:#000;
+}
+h3,h2 {
+  font-size:26px;
+  color:#9A9A9A;
+}
+h3 a {
+  color:#9A9A9A;
+}
+p {
+  margin:1em 0;
+}
+p.highlight {
+  font-weight:bold;
+  color:#CC0000;
+}
+ul {
+  font-size:16px;
+  list-style:square;
+  margin-left:15px;
+}
+ul li {
+  margin:0.5em 0;
+}
+hr {
+border:0;
+margin:15px 0;
+border-bottom:1px solid #DDD;
+}
+#msgbody ul {
+  list-style:square;
+}
+#msgbody ul li {
+  list-style:square;
+  margin:10px 0 15px 10px;
+}
+.text-regular {
+  font-size:14px;
+}
+.text-large {
+  font-size:18px;
+}
+.button {
+	background-color: #9A9A9A;
+	border:1px solid #87640d;
+	border-radius: 5px;
+	color: #FFFFFF;
+	font-size: 12px;
+	font-style: normal;
+	padding: 5px 10px;
+	text-decoration: none;
+}
+.button:hover {
+   background-color:#333;
+	text-shadow: 0 -1px 0 #000000;
+}
+.info {
+  margin:1em 0;
+  padding:10px;
+  background-color:#EEE;
+  border-radius:10px;
+  text-shadow:0 1px 0 #FFF;
+}
+.info h2 a {
+  color:#3A98D4;
+  text-decoration:none;
+}
+.info p {
+  font-weight:300;
+  margin:0;
+}
+.info p span {
+  font-weight:600;
+}
+.info.invoice, .info.account {
+	padding-left:68px;
+	background-image: url({$TPL_url}icon-invoice.png);
+	background-position:10px 10px;
+	background-repeat:no-repeat;
+}
+.info.account {
+	background-image: url({$TPL_url}icon-account.png);
+}
+table {
+width: 100%;  
+border-collapse: collapse;
+border-spacing: 0;
+}
+table td {
+border: 1px solid #ddd;  
+border-spacing: 0;
+}
+table thead td {
+font-weight: bold;
+}
+table td.small {
+width:20px;
+}
+
+/*Nice Table*/
+table.nice {
+  border-collapse: collapse;
+  width: 100%;
+}
+table.nice, table.nice td {
+  border: medium none;
+}
+table.nice{
+  border-collapse: collapse;
+  border-spacing: 0;
+  display: table;
+  width: 100%;
+}
+table.nice.tbl-label-val tr td:first-child,
+table.nice thead th,
+table.nice thead td,
+table.nice thead {
+	background-color: #EEE;
+	color: #000;
+	font-size: 16px;
+	padding: 8px;
+	text-align: left;
+	text-transform: uppercase;
+	font-size: 10px;
+	font-weight: 300;
+}
+table.nice td {
+  border: 1px solid #CCC;
+  padding: 8px;
+  background-color: #FFF;
+}
+table.nice td li {
+  list-style: outside none none;
+}
+table.nice tr.alt td {
+  background-color: #d8f8ff;
+  color: #000;
+}
+
+/*Col Table*/
+.coltable {
+	display:table;
+	width:100%;
+}
+.coltable.padcol .col{
+	padding:10px;
+}
+.coltable .col {
+	display:table-cell;
+	box-sizing:border-box;
+	vertical-align: top;
+}
+.coltable.float .col{
+	float:left;
+	display:block;
+}
+.coltable.marg {
+	margin:15px 0;
+}
+.coltable.vmiddle .col {
+	vertical-align:middle;
+}
+.coltable.vbottom .col {
+	vertical-align:bottom;
+}
+.coltable.vtop .col {
+	vertical-align:top;
+}
+.coltable.col1 .col {
+	width:100%;
+}
+.coltable.col2 .col {
+	width:50%;
+}
+.coltable.col3 .col {
+	width:33%;
+}
+.coltable.col4 .col {
+	width:25%;
+}
+.coltable .col.w60 {
+	width:60%;
+}
+.coltable .col.w40 {
+	width:40%;
+}
+.coltable .col.w75 {
+	width:75%;
+}
+.coltable .col.w25 {
+	width:25%;
+}
+.coltable.pad .col {
+	padding:10px;
+}
+.coltable .col.center {
+	text-align:center;
+}
+.coltable .col.padright {
+	padding-right:10px;	
+}
+.coltable .col.padleft {
+	padding-left:10px;	
+}
+.coltable img.resp {
+	max-width:100%;
+	width:100%;
+	vertical-align:top;
+}
+
+
+@media screen and (max-width:400px) {
+	body,html {
+		padding: 0;
+	}
+	.coltable .col {
+		display: block !important;
+		width: 100%;
+		margin-bottom: 20px;
+	}
+}

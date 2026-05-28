@@ -1,0 +1,31 @@
+#COPYRIGHT 2016 RAZOR WEB DESIGN LIMITED
+
+RewriteEngine On
+RewriteBase /site/
+
+RewriteRule quote/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=quote&Action=print&Token=$1
+RewriteRule sale/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=sale&Action=print&Token=$1
+RewriteRule purchase-order/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=porder&Action=print&Token=$1
+RewriteRule project/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=project&Action=print&Token=$1
+RewriteRule supplier/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=sale&Action=report_supplier&Token=$1
+RewriteRule order/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=sale&Action=print&Token=$1
+RewriteRule form/submit/s/([A-Za-z0-9]+)/$ admin/index.php?Page=form_post&Action=submit&FormShortToken=$1 [QSA]
+RewriteRule form/submit/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ admin/index.php?Page=form_post&Action=submit&User=$1&Slug=$2 [QSA]
+
+RewriteRule ^order/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=sale&Action=print&Token=$1
+RewriteRule ^ticket/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=book&Action=ticket_print&Token=$1&Public=1
+RewriteRule ^tickets/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=book&Action=ticket_print&Token=$1&All=1&Public=1
+
+RewriteRule ^web/order/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=sale&Action=print&Token=$1
+RewriteRule ^web/ticket/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=book&Action=ticket_print&Token=$1&Public=1
+RewriteRule ^web/tickets/view/([A-Za-z0-9_-]+)/$ admin/index.php?Page=book&Action=ticket_print&Token=$1&All=1&Public=1
+
+RewriteRule ^file/download/([A-Za-z0-9_-]+)/$ admin/index.php?Page=file&Action=download&token=$1&public=1
+RewriteRule ^file/download/q/([A-Za-z0-9_-]+)/$ admin/index.php?Page=file&Action=download&token=$1&type=quick&public=1
+
+RewriteRule ^api/feed/ical/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/$ api/feed/ical.php?user_token=$1&asset=$2
+RewriteRule ^api/feed/ical/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+).ics$ api/feed/ical.php?user_token=$1&asset=$2
+RewriteRule ^api/feed/ical/([A-Za-z0-9_-]+)/$ api/feed/ical.php?user_token=$1
+RewriteRule ^api/feed/ical/([A-Za-z0-9_-]+).ics$ api/feed/ical.php?user_token=$1
+
+RewriteRule ^sitemap.xml web/includes/sitemap.php

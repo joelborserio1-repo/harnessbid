@@ -1,0 +1,312 @@
+body {
+	background-color:#FFF;
+	font-family:'proxima-nova',arial,sans-serif;
+}
+
+*::after, *::before {
+    box-sizing: border-box;
+}
+
+h3 {
+	font-weight: 500;
+    line-height: 1.1;
+}
+.opt.opt-danger {
+    color: #d9534f !important;
+}
+
+/* Panel */
+.panel {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+.panel-default > .panel-heading {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    color: #333;
+}
+.panel-heading {
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 10px 15px;
+}
+.panel-body {
+    padding: 15px;
+}
+
+.document {
+	/*box-shadow:10px 10px 15px rgba(0,0,0,0.3);
+	background-color:#FFF;*/
+}
+.document .document-head,
+.document .document-foot,
+.document .document-body {
+	padding:20px;
+}
+.document .document-head {
+	border-bottom:2px solid #EEE;
+}
+.document .document-foot {
+	border-top:2px solid #EEE;
+}
+.document .col-center {
+	text-align:center;
+}
+.document .col-right {
+	text-align:right;
+}
+.document .document-head,
+.document .document-foot,
+.document .document-head,
+.document .document-foot {
+	color:#999;
+}
+.document-head .col-left img {
+	max-width:350px;
+}
+
+/*Document*/
+.panel-default > .panel-heading {
+	background-color:none;
+	background:none;
+	border-color:#CCC;
+	color:#000;
+}
+
+/*Styles*/
+a.bt-info {
+	font-size:12px;
+	transition:all 0.2s ease-in-out 0s;
+}
+a.bt-info:hover {
+	color:#000;
+}
+.document .document-head.style-blue {
+	border-color:#2e6da4;
+	color:#FFF;
+	background-color:#337ab7;
+}
+.document .document-head.style-green {
+	border-color:#3c763d;
+	color:#3c763d;
+	background-color:#dff0d8;
+}
+.document .document-head.style-blue label,
+.document .document-head.style-blue .fa,
+.document .document-head.style-blue p,
+.document .document-head.style-blue h1,
+.document .document-head.style-blue h2,
+.document .document-head.style-blue h3,
+.document .document-head.style-blue h4,
+.document .document-head.style-green label,
+.document .document-head.style-green .fa,
+.document .document-head.style-green p,
+.document .document-head.style-green h1,
+.document .document-head.style-green h2,
+.document .document-head.style-green h3,
+.document .document-head.style-green h4 {
+	color:inherit;
+}
+
+/*Signature*/
+.signature-box {
+	width:400px;
+	height:180px;
+	border:1px dashed #CCC;
+	transition:all 0.5s ease-in-out 0s;
+}
+.signature-box.highlight {
+	border-color:#5cb85c;
+	border-style:solid;
+}
+
+/*Ticket Item*/
+.ticket-item {
+	border-top:2px dashed #000;
+	border-bottom:2px dashed #000;
+	margin-left:-20px;
+	margin-right:-20px;
+	position:relative;
+	padding:20px;
+}
+.ticket-item .sci {
+	position:absolute;
+	top:-22px;
+	right:10px;
+	font-size:30px;
+	color:#000;
+	transform:rotate(180deg);
+}
+.ticket-item h3 {
+	margin:0 0 20px;
+}
+.ticket-item p.barcode-item,
+.ticket-item p.barcode-title,
+.ticket-item p.barcode {
+	margin:0 0 20px;
+	text-align:center;
+	font-family:courier,sans;
+	font-size:18px;
+}
+.ticket-item p.barcode-item {
+	display:block;
+	padding:10px;
+	border:1px solid #EEE;
+}
+.ticket-item p.barcode {
+	margin:0;
+}
+.ticket-item p.barcode-item img {
+	vertical-align: middle;
+	box-sizing: border-box;
+}
+.ticket-info {
+	border:2px solid #F00;
+	padding:10px;
+	margin-top: 10px;
+}
+.ticket-info * {
+	font-size:10px;
+}
+.ticket-info h4 {
+	margin: 0 0 10px;
+	color: #F00;
+	font-size: 16px;
+}
+
+/*Form Post Data*/
+.form-post-data {
+}
+.form-post-data table thead th {
+	text-align: left !important;
+}
+.form-post-data table tbody td {
+	padding: 5px 0;
+	font-size: 10px !important;
+}
+
+/*Total*/
+.lbl-ttl {
+	font-size:20px;
+	color:#3c763d;
+	font-weight:800;
+}
+
+p, td {
+	margin:0 0 5px;	
+	font-size: 12px;	
+}
+p.small {
+	font-size: 9px;	
+}
+table {
+	width:100%;	
+	border-collapse:collapse;
+}
+table thead tr td {
+	background-color:#000;
+	color:#FFF;
+	padding:7px;
+	font-weight:600;
+}
+table tbody tr td {
+	border-bottom: 1px solid #ddd;
+	padding:10px 7px;
+}
+table tr.bottom-bold td {
+	border-bottom: 1px solid #000;
+}
+table tr.first td {
+	border-top: 1px solid #ddd; 
+}
+/*Col Table*/
+.coltable {
+	display:table;
+	width:100%;
+}
+.coltable > .row {
+	display: table-row;
+}
+.coltable.padcol > .row > .col{
+	padding:10px;
+}
+.coltable > .row > .col {
+	display:table-cell;
+	box-sizing:border-box;
+}
+.coltable.float > .row > .col{
+	float:left;
+	display:block;
+}
+.coltable.marg {
+	margin:15px 0;
+}
+.coltable.vmiddle > .row > .col {
+	vertical-align:middle;
+}
+.coltable.vbottom > .row > .col {
+	vertical-align:bottom;
+}
+.coltable.vtop > .row > .col {
+	vertical-align:top;
+}
+.coltable.col2 > .row > .col {
+	width:50%;
+}
+.coltable.col3 > .row > .col {
+	width:33%;
+}
+.coltable.col4 > .row > .col {
+	width:25%;
+}
+.coltable > .row > .col.w10 {
+	width:10%;
+}
+.coltable > .row > .col.w90 {
+	width:90%;
+}
+.coltable > .row > .col.w60 {
+	width:60%;
+}
+.coltable > .row > .col.w40 {
+	width:40%;
+}
+.coltable > .row > .col.w75 {
+	width:75%;
+}
+.coltable > .row > .col.w25 {
+	width:25%;
+}
+.coltable.pad > .row > .col {
+	padding:10px;
+}
+.coltable > .row > .col.center {
+	text-align:center;
+}
+.coltable > .row > .col.padright {
+	padding-right:10px;	
+}
+.coltable > .row > .col.padleft {
+	padding-left:10px;	
+}
+.coltable img.resp {
+	width:100%;
+	vertical-align:top;
+}
+
+hr {
+	border-color: #eee;
+    border-image: none;
+    border-style: solid none none;
+    border-width: 1px 0 0;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.ticket-rows > .row {
+	page-break-inside: avoid;
+}

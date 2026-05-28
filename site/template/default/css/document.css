@@ -1,0 +1,170 @@
+
+body {
+    background: #f5f5f5 none repeat scroll 0 0 !important;
+    padding-top: 40px;
+}
+body.popup {
+    padding-top: 0;
+}
+.frame-width-800 .document {
+	width: 800px;
+	margin: 0 auto;
+}
+.document {
+    background-color: #fff;
+    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+}
+.document .document-head, .document .document-foot, .document .document-body {
+    padding: 20px;
+}
+.document .document-head {
+    border-bottom: 2px solid #eee;
+}
+.document .document-foot {
+    border-top: 2px solid #eee;
+}
+.document .col-center {
+    text-align: center;
+}
+.document .col-right {
+    text-align: right;
+}
+.document .document-head, .document .document-foot, .document .document-head, .document .document-foot {
+    color: #999;
+}
+.document-head .col-left img {
+    max-width: 350px;
+}
+.panel-default > .panel-heading {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border-color: #ccc;
+    color: #000;
+}
+a.bt-info {
+    font-size: 12px;
+    transition: all 0.2s ease-in-out 0s;
+}
+a.bt-info:hover {
+    color: #000;
+}
+.document .document-head.style-blue {
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    color: #fff;
+}
+.document .document-head.style-green {
+    background-color: #dff0d8;
+    border-color: #3c763d;
+    color: #3c763d;
+}
+.document .document-head.style-red {
+    background-color: #f2dede;
+    border-color: #a94442;
+    color: #a94442;
+}
+.document .document-head.style-blue label, .document .document-head.style-blue .fa, .document .document-head.style-blue p, .document .document-head.style-blue h1, .document .document-head.style-blue h2, .document .document-head.style-blue h3, .document .document-head.style-blue h4, .document .document-head.style-green label, .document .document-head.style-green .fa, .document .document-head.style-green p, .document .document-head.style-green h1, .document .document-head.style-green h2, .document .document-head.style-green h3, .document .document-head.style-green h4 {
+    color: inherit;
+}
+.signature-box {
+    border: 1px dashed #ccc;
+    height: 180px;
+    transition: all 0.5s ease-in-out 0s;
+    width: 400px;
+}
+.signature-box.highlight {
+    border-color: #5cb85c;
+    border-style: solid;
+}
+.ticket-item {
+    border-bottom: 2px dashed #000;
+    border-top: 2px dashed #000;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 20px;
+    position: relative;
+}
+.ticket-item .sci {
+    color: #000;
+    font-size: 30px;
+    position: absolute;
+    right: 10px;
+    top: -22px;
+    transform: rotate(180deg);
+}
+.ticket-item h3 {
+    margin: 0 0 20px;
+}
+.ticket-item p.barcode-item, .ticket-item p.barcode-title, .ticket-item p.barcode {
+    font-family: courier,sans;
+    font-size: 20px;
+    margin: 0 0 20px;
+    text-align: center;
+}
+.ticket-item p.barcode-item {
+    border: 1px solid #eee;
+    display: block;
+    padding: 10px;
+}
+.ticket-item p.barcode {
+    margin: 0;
+}
+.share-wrap {
+    border: 1px solid #444;
+    border-radius: 25px;
+    display: table;
+    padding: 5px;
+    width: 100%;
+}
+.share-wrap label {
+    box-sizing: border-box;
+    display: table-cell;
+    width: 20%;
+}
+.share-wrap input {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: medium none;
+    box-sizing: border-box;
+    color: #fff;
+    display: table-cell;
+    padding-left: 10px;
+    width: 100%;
+}
+.box-comment label {
+    color: #fff;
+}
+.box-comment input, .box-comment textarea, .box-comment select {
+    border: medium none;
+    color: #000;
+}
+.lbl-ttl {
+    color: #3c763d;
+    font-size: 20px;
+    font-weight: 800;
+}
+.taskbar {
+    background-color: rgba(0, 0, 0, 0.8);
+    bottom: 0;
+    color: #fff;
+    padding: 15px 10px;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+.taskbar-spacer {
+    margin-top: 100px;
+}
+
+/*Forms*/
+.form-wrapper .form-block.single > .field {
+	padding: 10px 0;
+}
+
+@media print {
+.taskbar {
+    display: none;
+}
+}
+@page {
+    margin-left: -5cm;
+    margin-right: -5cm;
+}

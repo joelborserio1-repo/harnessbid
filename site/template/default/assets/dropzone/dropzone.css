@@ -1,0 +1,15 @@
+.dz-default {
+	padding:10px;
+	border-radius:15px;
+	border:1px solid #EEE;
+	margin:10px 0;
+	cursor:pointer;
+	transition:all 0.3s ease-in-out 0s;
+}
+.dz-default:hover {
+	border-color:#337ab7;
+}
+.dz-default span {
+	display:block;
+	text-align:center;
+}

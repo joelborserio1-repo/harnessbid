@@ -1,0 +1,207 @@
+.click-button .section {
+	overflow:hidden;
+}
+.click-button .item {
+	width:20%;
+	padding:3px;
+	box-shadow:border-box;
+	float:left;
+}
+.click-button .item > .inv-add {
+	display:block;
+	text-align:center;
+	padding:20px;
+	min-height:200px;
+	border:1px solid #DDD;
+	background-color:#EEE;
+	border-radius:10px;
+	transition:all 0.2s ease-in-out 0s;
+	overflow:hidden;
+	cursor:pointer;
+}
+.click-button .item .item-title {
+	font-weight: 800;
+	font-size: 18px;
+}
+.click-button .item .item-price {
+	text-align: center;
+}
+.click-button .item .item-price p {
+	background-color: #FFF;
+	background-color: rgba(255,255,255,0.5);
+	display: inline-block;
+	clear: both;
+	border-radius: 4px;
+	padding: 4px 10px;
+	font-size: 20px;
+	margin: 0;
+}
+.click-button .item .item-image p {
+	margin: 0;
+	padding-top: 30px;
+}
+.click-button .item .item-image img {
+	margin-top: 10px;
+}
+.click-button.cb-small .item {
+	width:20%;
+}
+.click-button.cb-small .item > .inv-add {
+	padding:10px;
+	height:40px;
+}
+.click-button .item .cur-add {
+	border: 1px solid #EEE;
+	border-radius: 15px;
+	text-align: center;
+	padding: 20px 0;
+	box-shadow:inset 0 1px 0 #FFF, inset 0 -10px 8px #EEE;
+	cursor: pointer;
+	font-size: 22px;
+	font-weight: 300;
+	transition: all 0.2s ease-in-out 0s;
+}
+.click-button .item .cur-add:hover {
+	background-color: #EEE;
+}
+.sell-button.style-green .click-button .item > .inv-add:hover,
+.sell-button .click-button .item > .inv-add:hover {
+	box-shadow:inset 0px 0px 5px rgba(0,0,0,0.4);
+}
+.sell-button.style-green .click-button .item > .inv-add:active,
+.sell-button .click-button .item > .inv-add:active {
+	box-shadow:inset 0px 0px 5px rgba(255,255,255,0.6);
+	transform: scale(0.95,0.95);
+}
+
+.sell-button.style-green .item > .inv-add {
+	border:1px solid #B0D506;
+	background:linear-gradient(#C3FF6D,#B0D506);
+}
+.sell-button.style-blue .item > .inv-add {
+	border:1px solid #23b4e3;
+	background-color:#4ad2ff;
+	background:linear-gradient(#4ad2ff,#23b4e3);
+}
+.sell-button.style-red .item > .inv-add {
+	border:1px solid #ff4040;
+	background-color:#ff4040;
+	background:linear-gradient(#ff6b6b,#ff4040);
+}
+.sell-button.style-yellow .item > .inv-add {
+	border:1px solid #F6D400;
+	background-color:#FFF89C;
+	background:linear-gradient(#FFF89C,#F6D400);
+}
+.sell-button.style-orange .item > .inv-add {
+	border:1px solid #DD8E00;
+	background-color:#ffc04e;
+	background:linear-gradient(#ffc04e,#DD8E00);
+}
+.sell-button.style-pink .item > .inv-add {
+	border:1px solid #F26CFF;
+	background-color:#FF88E6;
+	background:linear-gradient(#FF88E6,#F26CFF);
+}
+.sell-button.style-purple .item > .inv-add {
+	border:1px solid #9200D0;
+	background-color:#BC64EC;
+	background:linear-gradient(#BC64EC,#9200D0);
+}
+
+.sell_sortable { list-style-type: none; padding: 0; margin: 0; }
+.sell_sortable .ui-sortable-helper {
+	cursor: move !important;
+}
+
+/*Layout item*/
+.sell-layout-item {
+	display:inline-block;
+	width:33%;
+}
+
+/*Inventory list*/
+.inventory-list {
+	list-style:none;
+	padding:0;
+	margin:0;	
+}
+.inventory-list li {
+	padding:5px 0;
+	border-bottom:1px solid #EEE;
+	width:100%;
+}
+.inventory-list li:nth-child(even) {
+	background-color:#F8F8F8;
+}
+.inventory-list li > p {
+	margin:0;
+	display:inline-block;
+	font-size:12px;
+}
+.inventory-list li > p.title {
+	width:45%;
+	padding-left: 10px;
+}
+.inventory-list li > p.quan {
+	width:15%;
+}
+.inventory-list li > p.disc {
+	width:15%;
+}
+.inventory-list li > p.price {
+	width:15%;
+}
+.inventory-list li > p.action {
+	text-align:right;
+	width:10%;
+	padding-right: 10px;
+}
+.inventory-list li.head > p {
+	font-weight:800;
+	color:#999;
+}
+
+/*Selling item*/
+.sell-layout-item {
+	padding-top:20px;
+}
+
+/*Total*/
+.price-box p {
+	font-size:12px;
+	margin:5px 0;
+	color:#999;
+}
+.price-box p.lbl-ttl {
+	font-size:20px;
+	color:#3c763d;
+	font-weight:800;
+}
+.price-box .vals {
+	padding-left:30px;
+}
+.total-amount {
+	margin:15px 0 0;
+}
+
+@media screen and (max-width:1280px) {
+	#page-wrapper:not(.nosidebar) .click-button .item {
+		width:25%;
+	}
+}
+@media screen and (max-width:800px) {
+	#page-wrapper .click-button .item {
+		width:25%;
+	}
+}
+@media screen and (max-width:600px) {
+	.click-button .item {
+		width:33%;
+	}
+}
+@media screen and (max-width:400px) {
+	.click-button .item {
+		width:50%;
+	}
+}

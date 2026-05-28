@@ -1,0 +1,118 @@
+body {
+	background-color:#FFF;
+	width:100%;
+	font-family:sans-serif !important;
+}
+
+*::after, *::before {
+    box-sizing: border-box;
+}
+
+a {
+	display:none !important;
+}
+
+.signature-box {
+	width:400px;
+	height:180px;
+	display: block;
+	border: 1px dashed #ccc;
+}
+
+.document .document-foot {
+    border-top: 2px solid #eee;
+}
+
+.document .document-head {
+    border-bottom: 2px solid #eee;
+}
+.document .document-head.style-green {
+    background-color: #dff0d8;
+    border-color: #3c763d;
+    color: #3c763d;
+}
+.document .document-head, .document .document-foot {
+    padding: 20px;
+}
+
+/*Col Table*/
+.coltable {
+	display:table;
+	width:100%;
+}
+.coltable > .row {
+	display: table-row;
+}
+.coltable.padcol > .row > .col{
+	padding:10px;
+}
+.coltable > .row > .col {
+	display:table-cell;
+	box-sizing:border-box;
+}
+.coltable.float > .row > .col{
+	float:left;
+	display:block;
+}
+.coltable.marg {
+	margin:15px 0;
+}
+.coltable.vmiddle > .row > .col {
+	vertical-align:middle;
+}
+.coltable.vbottom > .row > .col {
+	vertical-align:bottom;
+}
+.coltable.vtop > .row > .col {
+	vertical-align:top;
+}
+.coltable.col2 > .row > .col {
+	width:50%;
+}
+.coltable.col3 > .row > .col {
+	width:33%;
+}
+.coltable.col4 > .row > .col {
+	width:25%;
+}
+.coltable > .row > .col.w10 {
+	width:10%;
+}
+.coltable > .row > .col.w90 {
+	width:90%;
+}
+.coltable > .row > .col.w60 {
+	width:60%;
+}
+.coltable > .row > .col.w40 {
+	width:40%;
+}
+.coltable > .row > .col.w66 {
+	width:66.66%;
+}
+.coltable > .row > .col.w33 {
+	width:33.33%;
+}
+.coltable > .row > .col.w75 {
+	width:75%;
+}
+.coltable > .row > .col.w25 {
+	width:25%;
+	max-width:25%;
+}
+.coltable.pad > .row > .col {
+	padding:10px;
+}
+.coltable > .row > .col.center {
+	text-align:center;
+}
+.coltable > .row > .col.padright {
+	padding-right:10px;	
+}
+.coltable > .row > .col.padleft {
+	padding-left:10px;	
+}
+.coltable img.resp {
+	width:100%;
+	vertical-align:top;
+}
