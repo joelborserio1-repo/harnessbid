@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square70x70logo src="https://harnessbid.com/site/..//template/user/lafusidlbfjkds/favicon/mstile-70x70.png?ver=K3zVr"/>
+            <square150x150logo src="https://harnessbid.com/site/..//template/user/lafusidlbfjkds/favicon/mstile-150x150.png?ver=K3zVr"/>
+            <square310x310logo src="https://harnessbid.com/site/..//template/user/lafusidlbfjkds/favicon/mstile-310x310.png?ver=K3zVr"/>
+            <wide310x150logo src="https://harnessbid.com/site/..//template/user/lafusidlbfjkds/favicon/mstile-310x150.png?ver=K3zVr"/>
+            <TileColor>#FFF</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>

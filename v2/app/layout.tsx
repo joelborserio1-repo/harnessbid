@@ -1,0 +1,50 @@
+import type { Metadata, Viewport } from 'next'
+import { Cinzel, Sora } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import './globals.css'
+
+const sora = Sora({ 
+  subsets: ["latin"],
+  variable: '--font-sora',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+})
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  variable: '--font-cinzel',
+  display: 'swap',
+  weight: ['700'],
+})
+
+export const metadata: Metadata = {
+  title: 'HarnessBid | Premium Harness Racing Marketplace & Auctions',
+  description: 'The global marketplace for harness racing horses, equipment, and services. Buy, sell, and auction with trusted industry professionals worldwide.',
+  generator: 'HarnessBid',
+  keywords: ['harness racing', 'horse auctions', 'standardbred', 'racing equipment', 'bloodstock', 'trotters', 'pacers'],
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#00205F',
+  width: 'device-width',
+  initialScale: 1,
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className={`${sora.variable} ${cinzel.variable} bg-background`}>
+      <body className="font-sans antialiased">
+        {children}
+        {process.env.NODE_ENV === 'production' && <Analytics />}
+      </body>
+    </html>
+  )
+}

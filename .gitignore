@@ -1,3 +1,6 @@
 harnessbidgithubcleansplit.z01
 harnessbidgithubcleansplit.zip
 extracted/
+v2/node_modules/
+v2/.next/
+v2/.env*.local
