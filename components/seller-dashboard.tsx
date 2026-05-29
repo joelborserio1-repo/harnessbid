@@ -21,6 +21,17 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { EnterpriseRequestCard } from "@/components/enterprise-request-card"
+
+export type SellerDashboardProps = {
+  seller?: {
+    name: string
+    accountTypeLabel: string
+    verified: boolean
+    isEnterprise: boolean
+    enterpriseRequested: boolean
+  }
+}
 
 const sellerStats = {
   totalListings: 156,
@@ -101,7 +112,16 @@ function formatCurrency(amount: number) {
   }).format(amount)
 }
 
-export function SellerDashboard() {
+export function SellerDashboard({ seller }: SellerDashboardProps = {}) {
+  const sellerName = seller?.name ?? "Harness Pro Equipment"
+  const sellerSubtitle = seller
+    ? seller.verified
+      ? `${seller.accountTypeLabel} · Verified seller`
+      : `${seller.accountTypeLabel} · Verification pending`
+    : "Enterprise Seller since 2019"
+  const showVerifiedBadge = seller ? seller.verified : true
+  const showEnterpriseRequest = seller ? !seller.isEnterprise : false
+
   return (
     <div className="min-h-screen bg-background">
       {/* Dashboard Header */}
@@ -120,11 +140,11 @@ export function SellerDashboard() {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="font-sora text-xl font-semibold text-primary-foreground">
-                    Harness Pro Equipment
+                    {sellerName}
                   </h1>
-                  <BadgeCheck className="h-5 w-5 text-accent" />
+                  {showVerifiedBadge && <BadgeCheck className="h-5 w-5 text-accent" />}
                 </div>
-                <p className="text-sm text-primary-foreground/70">Enterprise Seller since 2019</p>
+                <p className="text-sm text-primary-foreground/70">{sellerSubtitle}</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -359,6 +379,10 @@ export function SellerDashboard() {
                 </Link>
               </CardContent>
             </Card>
+
+            {showEnterpriseRequest && (
+              <EnterpriseRequestCard requested={seller?.enterpriseRequested ?? false} />
+            )}
           </div>
         </div>
       </div>

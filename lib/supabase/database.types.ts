@@ -19,6 +19,23 @@ type Enums = {
   verification_status: "unverified" | "pending" | "verified" | "rejected" | "suspended"
 }
 
+type ProfileRow = {
+  id: string
+  email: string | null
+  full_name: string | null
+  display_name: string | null
+  phone: string | null
+  avatar_url: string | null
+  role: Enums["app_role"]
+  country_code: string | null
+  timezone: string | null
+  is_active: boolean
+  last_seen_at: string | null
+  metadata: Json
+  created_at: string
+  updated_at: string
+}
+
 type AuctionRow = {
   id: string
   horse_listing_id: string | null
@@ -193,6 +210,7 @@ type TableFrom<Row> = {
 export type Database = {
   public: {
     Tables: {
+      profiles: TableFrom<ProfileRow>
       auctions: TableFrom<AuctionRow>
       categories: TableFrom<CategoryRow>
       horse_listings: TableFrom<HorseListingRow>

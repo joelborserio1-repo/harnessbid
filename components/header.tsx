@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { 
-  Search, 
-  User, 
-  Heart, 
-  Menu, 
-  X, 
+import { useRouter } from "next/navigation"
+import {
+  Search,
+  User,
+  Heart,
+  Menu,
+  X,
   ChevronDown,
   Bike,
   Shield,
@@ -19,16 +20,20 @@ import {
   Dna,
   Shirt,
   MoreHorizontal,
-  Gavel
+  Gavel,
+  LayoutDashboard,
+  LogOut
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
+import { useAuthUser } from "@/hooks/use-auth-user"
 
 const horseCategories = [
   { name: "Live Auctions", icon: Gavel, href: "/auctions" },
@@ -58,6 +63,20 @@ const otherCategories = [
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const homeHref = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/`
+  const { isAuthenticated, email } = useAuthUser()
+  const router = useRouter()
+
+  async function handleSignOut() {
+    try {
+      const { createSupabaseBrowserClient } = await import("@/lib/supabase/client")
+      await createSupabaseBrowserClient().auth.signOut()
+    } catch {
+      // No-op: Supabase env may be unconfigured; fall through to refresh.
+    }
+    setIsMobileMenuOpen(false)
+    router.refresh()
+    router.push("/")
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-primary">
@@ -164,17 +183,61 @@ export function Header() {
                 <span className="sr-only">Watchlist</span>
               </Link>
             </Button>
-            <Link href="/login">
-              <Button variant="ghost" className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10">
-                <User className="mr-2 h-4 w-4" />
-                Login
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button className="bg-accent text-accent-foreground hover:bg-accent/90">
-                Register
-              </Button>
-            </Link>
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10">
+                    <User className="mr-2 h-4 w-4" />
+                    Account
+                    <ChevronDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  {email && (
+                    <>
+                      <DropdownMenuLabel className="truncate font-normal text-muted-foreground">
+                        {email}
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="flex cursor-pointer items-center gap-2">
+                      <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+                      Seller dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/account" className="flex cursor-pointer items-center gap-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10">
+                    <User className="mr-2 h-4 w-4" />
+                    Login
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button className="bg-accent text-accent-foreground hover:bg-accent/90">
+                    Register
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -233,19 +296,50 @@ export function Header() {
                 <Heart className="h-5 w-5" />
                 Watchlist
               </Link>
-              <Link 
-                href="/login" 
-                className="flex items-center gap-2 px-4 py-2 text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <User className="h-5 w-5" />
-                Login
-              </Link>
-              <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button className="w-full mt-2 bg-accent text-accent-foreground hover:bg-accent/90">
-                  Register
-                </Button>
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-2 px-4 py-2 text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <LayoutDashboard className="h-5 w-5" />
+                    Seller dashboard
+                  </Link>
+                  <Link
+                    href="/account"
+                    className="flex items-center gap-2 px-4 py-2 text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <User className="h-5 w-5" />
+                    Account
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="flex items-center gap-2 px-4 py-2 text-left text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="flex items-center gap-2 px-4 py-2 text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <User className="h-5 w-5" />
+                    Login
+                  </Link>
+                  <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button className="w-full mt-2 bg-accent text-accent-foreground hover:bg-accent/90">
+                      Register
+                    </Button>
+                  </Link>
+                </>
+              )}
             </nav>
           </div>
         )}
