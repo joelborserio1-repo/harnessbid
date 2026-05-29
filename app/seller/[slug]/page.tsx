@@ -1,8 +1,28 @@
+import { cache } from "react"
+import type { Metadata } from "next"
 import { SellerStorefrontPage } from "@/components/seller-storefront"
 import { EmptyStatePage } from "@/components/static-pages"
 import { getSellerStorefront } from "@/lib/supabase/queries"
 import { viewerOwnsSeller } from "@/lib/enquiries/queries"
 import { Building2, Search } from "lucide-react"
+
+const loadStorefront = cache(getSellerStorefront)
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const result = await loadStorefront(slug)
+  const s = result.data?.seller
+  if (!s) return { title: "Seller | HarnessBid" }
+  return {
+    title: `${s.name} | HarnessBid Seller`,
+    description: s.bio?.slice(0, 160),
+    openGraph: { title: s.name, description: s.bio?.slice(0, 160), type: "profile" },
+  }
+}
 
 export default async function SellerStorefrontRoute({
   params,
@@ -10,7 +30,7 @@ export default async function SellerStorefrontRoute({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const storefront = await getSellerStorefront(slug)
+  const storefront = await loadStorefront(slug)
 
   if (storefront.error) {
     return (

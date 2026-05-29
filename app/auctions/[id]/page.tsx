@@ -1,3 +1,5 @@
+import { cache } from "react"
+import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { AuctionListingDetail } from "@/components/listing-detail"
@@ -16,13 +18,36 @@ import {
   getViewerAuctionState,
 } from "@/lib/auctions/queries"
 
+const loadAuction = cache(getHorseAuction)
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const result = await loadAuction(id)
+  const a = result.data
+  if (!a) return { title: "Horse auction | HarnessBid" }
+  return {
+    title: `${a.name} | HarnessBid Auctions`,
+    description: a.description?.slice(0, 160),
+    openGraph: {
+      title: a.name,
+      description: a.description?.slice(0, 160),
+      type: "website",
+      images: a.image && a.image !== "/placeholder.jpg" ? [a.image] : undefined,
+    },
+  }
+}
+
 export default async function AuctionDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const auction = await getHorseAuction(id)
+  const auction = await loadAuction(id)
 
   if (auction.error) {
     return (

@@ -18,6 +18,7 @@ const cinzel = Cinzel({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://harnessbid.com'),
   title: 'HarnessBid | Premium Harness Racing Marketplace & Auctions',
   description: 'The global marketplace for harness racing horses, equipment, and services. Buy, sell, and auction with trusted industry professionals worldwide.',
   generator: 'HarnessBid',

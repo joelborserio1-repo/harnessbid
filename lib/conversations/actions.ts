@@ -5,6 +5,7 @@ import {
   createSupabaseServerAuthClient,
   hasSupabaseEnv,
 } from "@/lib/supabase/auth-server"
+import { LIMITS, rateLimit } from "@/lib/rate-limit"
 
 export type MessageActionResult = { ok: boolean; error?: string }
 
@@ -24,6 +25,11 @@ export async function sendMessageAction(
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return { ok: false, error: "Please sign in." }
+
+  const limited = rateLimit(`msg:${user.id}`, LIMITS.message.limit, LIMITS.message.windowMs)
+  if (!limited.allowed) {
+    return { ok: false, error: "You're sending messages too quickly. Please slow down." }
+  }
 
   // Confirm participation (RLS only returns the row to participants).
   const { data: conv } = await supabase

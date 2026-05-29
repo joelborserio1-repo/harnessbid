@@ -487,6 +487,10 @@ export type Database = {
         Args: { p_auction: string }
         Returns: undefined
       }
+      process_auction_transitions: {
+        Args: Record<string, never>
+        Returns: undefined
+      }
       get_auction_bid_history: {
         Args: { p_auction: string }
         Returns: {

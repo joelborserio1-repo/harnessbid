@@ -5,6 +5,7 @@ import {
   createSupabaseServerAuthClient,
   hasSupabaseEnv,
 } from "@/lib/supabase/auth-server"
+import { LIMITS, rateLimit } from "@/lib/rate-limit"
 
 export type PlaceBidResult = {
   ok: boolean
@@ -44,6 +45,16 @@ export async function placeBidAction(
   }
 
   const supabase = await createSupabaseServerAuthClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (user) {
+    const limited = rateLimit(`bid:${user.id}`, LIMITS.bid.limit, LIMITS.bid.windowMs)
+    if (!limited.allowed) {
+      return { ok: false, error: "Too many bids in a short time. Please wait a moment." }
+    }
+  }
+
   const { data, error } = await supabase.rpc("place_bid", {
     p_auction_id: auctionId,
     p_max_amount: maxAmount,

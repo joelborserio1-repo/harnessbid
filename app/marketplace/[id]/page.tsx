@@ -1,3 +1,5 @@
+import { cache } from "react"
+import type { Metadata } from "next"
 import { EquipmentListingDetail } from "@/components/listing-detail"
 import { EmptyStatePage, PageFrame, categoryPages } from "@/components/static-pages"
 import { Search } from "lucide-react"
@@ -7,6 +9,30 @@ import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
 import { isListingWatched } from "@/lib/listings/watchlist"
 import { viewerOwnsListing } from "@/lib/enquiries/queries"
 import { ReportListingButton } from "@/components/listings/report-listing-button"
+
+const loadListing = cache(getMarketplaceListing)
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  if (categoryPages[id]) return { title: "Marketplace | HarnessBid" }
+  const result = await loadListing(id)
+  const l = result.data
+  if (!l) return { title: "Marketplace | HarnessBid" }
+  return {
+    title: `${l.title} | HarnessBid Marketplace`,
+    description: l.description?.slice(0, 160),
+    openGraph: {
+      title: l.title,
+      description: l.description?.slice(0, 160),
+      type: "website",
+      images: l.image && l.image !== "/placeholder.jpg" ? [l.image] : undefined,
+    },
+  }
+}
 
 export default async function MarketplaceDetailPage({
   params,
@@ -20,7 +46,7 @@ export default async function MarketplaceDetailPage({
     return <EmptyStatePage {...categoryPage} />
   }
 
-  const listing = await getMarketplaceListing(id)
+  const listing = await loadListing(id)
 
   if (listing.error) {
     return (
