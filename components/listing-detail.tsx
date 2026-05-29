@@ -244,7 +244,7 @@ export function EquipmentListingDetail({
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Images & Details */}
           <div className="lg:col-span-2 space-y-8">
-            {actionBar && <div className="flex flex-wrap items-center gap-2">{actionBar}</div>}
+            {actionBar && <div id="listing-actions" className="flex flex-wrap items-center gap-2">{actionBar}</div>}
             <ImageGallery images={listing.images} />
 
             {/* Listing Info - Mobile */}
@@ -335,11 +335,8 @@ export function EquipmentListingDetail({
             <p className="text-2xl font-bold text-foreground">{formatCurrency(listing.price)}</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon">
-              <Heart className="h-5 w-5" />
-            </Button>
-            <Button className="bg-accent text-accent-foreground hover:bg-accent/90 px-6" disabled>
-              Enquiries Disabled
+            <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 px-6">
+              <a href="#listing-actions">Contact seller</a>
             </Button>
           </div>
         </div>
@@ -381,9 +378,11 @@ function ListingInfoCard({ listing }: { listing: ReturnType<typeof toEquipmentLi
           </div>
 
           <div className="flex gap-2">
-            <Button className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90" disabled>
-              <MessageSquare className="mr-2 h-4 w-4" />
-              Enquiries Disabled
+            <Button asChild className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90">
+              <a href="#listing-actions">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Contact seller
+              </a>
             </Button>
             <Button variant="outline" size="icon">
               <Heart className="h-5 w-5" />
@@ -457,13 +456,17 @@ function SellerCard({ seller }: { seller: ReturnType<typeof toEquipmentListingVi
         <Separator className="my-4" />
 
         <div className="space-y-2">
-          <Button variant="outline" className="w-full justify-start" disabled>
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Messaging Disabled
+          <Button asChild variant="outline" className="w-full justify-start">
+            <a href="#listing-actions">
+              <MessageSquare className="mr-2 h-4 w-4" />
+              Message seller
+            </a>
           </Button>
-          <Button variant="outline" className="w-full justify-start" disabled>
-            <Phone className="mr-2 h-4 w-4" />
-            Phone Request Disabled
+          <Button asChild variant="outline" className="w-full justify-start">
+            <a href="#listing-actions">
+              <Phone className="mr-2 h-4 w-4" />
+              Request a call
+            </a>
           </Button>
           <Link href={`/sellers/${seller.name.toLowerCase().replace(/\s+/g, '-')}`}>
             <Button variant="ghost" className="w-full justify-start text-primary">
@@ -511,7 +514,7 @@ export function AuctionListingDetail({
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Images & Details */}
           <div className="lg:col-span-2 space-y-8">
-            {actionBar && <div className="flex flex-wrap items-center gap-2">{actionBar}</div>}
+            {actionBar && <div id="listing-actions" className="flex flex-wrap items-center gap-2">{actionBar}</div>}
             <ImageGallery images={listing.images} />
 
             {/* Auction Info - Mobile */}
@@ -605,11 +608,8 @@ export function AuctionListingDetail({
             <p className="text-2xl font-bold text-foreground">{formatCurrency(listing.currentBid)}</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon">
-              <Heart className="h-5 w-5" />
-            </Button>
-            <Button className="bg-accent text-accent-foreground hover:bg-accent/90 px-6">
-              Bidding Disabled
+            <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 px-6">
+              <a href="#listing-actions">Place a bid</a>
             </Button>
           </div>
         </div>
