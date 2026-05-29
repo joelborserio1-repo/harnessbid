@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EnterpriseRequestCard } from "@/components/enterprise-request-card"
 import type { SellerAuctionItem } from "@/lib/auctions/dashboard"
+import type { SellerBillingSummary } from "@/lib/payments/queries"
 
 export type SellerDashboardData = {
   name: string
@@ -147,12 +148,51 @@ function SellerAuctionsCard({ auctions }: { auctions: SellerAuctionItem[] }) {
   )
 }
 
+const BILLING_LABELS: Record<string, string> = {
+  per_listing: "Per-listing fees",
+  invoiced: "Invoiced (enterprise)",
+  exempt: "Fee exempt",
+}
+
+function BillingCard({ billing }: { billing: SellerBillingSummary }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="font-sora text-lg">Billing</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Billing mode</span>
+          <Badge variant="secondary">
+            {billing.feeExempt ? "Fee exempt" : BILLING_LABELS[billing.billingMode] ?? billing.billingMode}
+          </Badge>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Open invoices</span>
+          <span className="font-medium text-foreground">
+            {billing.openInvoiceTotal > 0 ? currencyShort(billing.openInvoiceTotal) : "None"}
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Payouts</span>
+          <span className="font-medium text-foreground">{billing.payoutCount}</span>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Listing fees, featured upgrades, and payouts connect when payments go live.
+        </p>
+      </CardContent>
+    </Card>
+  )
+}
+
 export function SellerDashboard({
   seller,
   auctions = [],
+  billing,
 }: {
   seller: SellerDashboardData
   auctions?: SellerAuctionItem[]
+  billing?: SellerBillingSummary | null
 }) {
   const verification = VERIFICATION_COPY[seller.verificationStatus] ?? VERIFICATION_COPY.unverified
   const storefrontHref = `/seller/${seller.slug}`
@@ -345,6 +385,8 @@ export function SellerDashboard({
             ) : (
               <EnterpriseRequestCard requested={seller.enterpriseRequested} />
             )}
+
+            {billing && <BillingCard billing={billing} />}
 
             <Card>
               <CardHeader>

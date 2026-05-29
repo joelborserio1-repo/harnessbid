@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { getEnterpriseApplications } from "@/lib/admin/queries"
-import { setEnterpriseStatusAction } from "@/lib/admin/actions"
+import { setEnterpriseStatusAction, setSellerBillingAction } from "@/lib/admin/actions"
 
 export const dynamic = "force-dynamic"
 
@@ -49,8 +49,24 @@ export default async function AdminEnterprisePage() {
                     </Link>
                   )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <ApproveReject id={app.id} sellerAccountId={app.sellerAccountId} />
+                  <form action={setSellerBillingAction}>
+                    <input type="hidden" name="sellerAccountId" value={app.sellerAccountId} />
+                    <input type="hidden" name="field" value="billing_mode" />
+                    <input type="hidden" name="value" value="invoiced" />
+                    <Button type="submit" size="sm" variant="ghost">
+                      Set invoiced
+                    </Button>
+                  </form>
+                  <form action={setSellerBillingAction}>
+                    <input type="hidden" name="sellerAccountId" value={app.sellerAccountId} />
+                    <input type="hidden" name="field" value="fee_exempt" />
+                    <input type="hidden" name="value" value="true" />
+                    <Button type="submit" size="sm" variant="ghost">
+                      Fee exempt
+                    </Button>
+                  </form>
                 </div>
               </CardContent>
             </Card>

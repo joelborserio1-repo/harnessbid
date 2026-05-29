@@ -156,6 +156,28 @@ export async function createSaleEventAction(
   return { error: lastError ?? "Could not create the sale event." }
 }
 
+/** Set a seller's billing model / fee exemption (commercial controls). */
+export async function setSellerBillingAction(formData: FormData): Promise<void> {
+  await requireStaff()
+  if (!hasSupabaseEnv()) return
+  const supabase = await createSupabaseServerAuthClient()
+
+  const sellerAccountId = String(formData.get("sellerAccountId") ?? "")
+  const field = String(formData.get("field") ?? "")
+  const value = String(formData.get("value") ?? "")
+  if (!sellerAccountId) return
+
+  const patch: Record<string, unknown> = {}
+  if (field === "fee_exempt") patch.fee_exempt = value === "true"
+  else if (field === "billing_mode" && ["per_listing", "invoiced", "exempt"].includes(value)) {
+    patch.billing_mode = value
+  } else return
+
+  await supabase.from("seller_accounts").update(patch as never).eq("id", sellerAccountId)
+  await logModeration("seller_billing_update", "seller_account", sellerAccountId, `${field}=${value}`)
+  revalidatePath("/admin/enterprise")
+}
+
 /** Toggle category visibility / featured flag, or set sort order. */
 export async function updateCategoryAction(formData: FormData): Promise<void> {
   await requireStaff()

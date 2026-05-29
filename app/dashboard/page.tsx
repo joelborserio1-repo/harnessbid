@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer"
 import { SellerDashboard } from "@/components/seller-dashboard"
 import { getOwnedSellerContext, getSessionUser } from "@/lib/supabase/auth-server"
 import { getSellerAuctionSummary } from "@/lib/auctions/dashboard"
+import { getSellerBillingSummary } from "@/lib/payments/queries"
 
 // Auth depends on per-request cookies; never statically prerender.
 export const dynamic = "force-dynamic"
@@ -23,7 +24,10 @@ export default async function DashboardPage() {
   const seller = await getOwnedSellerContext()
   if (!seller) redirect("/onboarding")
 
-  const auctions = await getSellerAuctionSummary()
+  const [auctions, billing] = await Promise.all([
+    getSellerAuctionSummary(),
+    getSellerBillingSummary(),
+  ])
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -49,6 +53,7 @@ export default async function DashboardPage() {
               : null,
           }}
           auctions={auctions}
+          billing={billing}
         />
       </main>
       <Footer />

@@ -18,6 +18,7 @@ type Enums = {
   horse_sex: "colt" | "filly" | "gelding" | "mare" | "stallion" | "ridgling" | "unknown"
   listing_status: "draft" | "pending_review" | "published" | "paused" | "under_offer" | "sold" | "expired" | "rejected" | "archived"
   marketplace_condition: "new" | "excellent" | "good" | "fair" | "used" | "for_parts" | "not_applicable"
+  payment_status: "placeholder" | "pending" | "requires_action" | "authorized" | "captured" | "failed" | "cancelled" | "refunded"
   sale_mode: "classified" | "buy_now" | "auction" | "private_treaty"
   seller_account_type: "individual" | "business" | "enterprise"
   verification_status: "unverified" | "pending" | "verified" | "rejected" | "suspended"
@@ -83,6 +84,71 @@ type EnquiryRow = {
   status: Enums["enquiry_status"]
   read_at: string | null
   replied_at: string | null
+  metadata: Json
+  created_at: string
+  updated_at: string
+}
+
+type PaymentIntentRow = {
+  id: string
+  buyer_profile_id: string | null
+  seller_account_id: string | null
+  auction_id: string | null
+  horse_listing_id: string | null
+  marketplace_listing_id: string | null
+  provider: string | null
+  provider_intent_reference: string | null
+  status: Enums["payment_status"]
+  currency: string
+  amount: number
+  platform_fee_amount: number | null
+  seller_net_amount: number | null
+  purpose: string
+  refunded_amount: number | null
+  metadata: Json
+  created_at: string
+  updated_at: string
+}
+
+type AuctionDepositRow = {
+  id: string
+  auction_id: string
+  bidder_profile_id: string
+  amount: number
+  status: string
+  payment_intent_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+type InvoiceRow = {
+  id: string
+  seller_account_id: string | null
+  enterprise_seller_id: string | null
+  sale_event_id: string | null
+  status: string
+  currency: string
+  amount: number
+  due_at: string | null
+  issued_at: string | null
+  paid_at: string | null
+  provider_reference: string | null
+  line_items: Json
+  metadata: Json
+  created_at: string
+  updated_at: string
+}
+
+type PayoutRow = {
+  id: string
+  seller_account_id: string
+  amount: number
+  currency: string
+  status: string
+  provider_reference: string | null
+  payment_intent_id: string | null
+  scheduled_at: string | null
+  paid_at: string | null
   metadata: Json
   created_at: string
   updated_at: string
@@ -187,6 +253,9 @@ type AuctionRow = {
   winner_profile_id: string | null
   reserve_met: boolean
   settled_at: string | null
+  deposit_required: boolean
+  deposit_amount: number | null
+  settlement_status: string
   metadata: Json
   created_at: string
   updated_at: string
@@ -248,6 +317,9 @@ type HorseListingRow = {
   published_at: string | null
   sold_at: string | null
   expires_at: string | null
+  listing_fee_status: string
+  featured_fee_status: string
+  featured_until: string | null
   created_at: string
   updated_at: string
 }
@@ -298,6 +370,8 @@ type MarketplaceListingRow = {
   published_at: string | null
   sold_at: string | null
   expires_at: string | null
+  listing_fee_status: string
+  featured_fee_status: string
   created_at: string
   updated_at: string
 }
@@ -325,6 +399,8 @@ type SellerAccountRow = {
   total_listings: number
   is_active: boolean
   verified_at: string | null
+  billing_mode: string
+  fee_exempt: boolean
   metadata: Json
   created_at: string
   updated_at: string
@@ -353,6 +429,10 @@ export type Database = {
       listing_reports: TableFrom<ListingReportRow>
       moderation_logs: TableFrom<ModerationLogRow>
       sale_events: TableFrom<SaleEventRow>
+      payment_intents: TableFrom<PaymentIntentRow>
+      auction_deposits: TableFrom<AuctionDepositRow>
+      invoices: TableFrom<InvoiceRow>
+      payouts: TableFrom<PayoutRow>
       auctions: TableFrom<AuctionRow>
       categories: TableFrom<CategoryRow>
       horse_listings: TableFrom<HorseListingRow>
