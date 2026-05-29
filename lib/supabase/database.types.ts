@@ -9,6 +9,7 @@ export type Json =
 type Enums = {
   app_role: "buyer" | "seller" | "enterprise_seller" | "admin"
   auction_status: "draft" | "scheduled" | "live" | "extended" | "closed" | "settled" | "cancelled"
+  bid_status: "active" | "outbid" | "winning" | "won" | "retracted" | "rejected"
   category_type: "horse" | "marketplace" | "service" | "content"
   enquiry_status: "open" | "replied" | "closed" | "spam" | "archived"
   enterprise_tier: "standard" | "preferred" | "premier" | "strategic"
@@ -85,6 +86,20 @@ type EnquiryRow = {
   metadata: Json
   created_at: string
   updated_at: string
+}
+
+type BidRow = {
+  id: string
+  auction_id: string
+  bidder_profile_id: string
+  amount: number
+  max_proxy_amount: number | null
+  status: Enums["bid_status"]
+  ip_hash: string | null
+  user_agent: string | null
+  metadata: Json
+  placed_at: string
+  created_at: string
 }
 
 type NotificationRow = {
@@ -291,6 +306,7 @@ export type Database = {
       enquiries: TableFrom<EnquiryRow>
       notifications: TableFrom<NotificationRow>
       saved_searches: TableFrom<SavedSearchRow>
+      bids: TableFrom<BidRow>
       auctions: TableFrom<AuctionRow>
       categories: TableFrom<CategoryRow>
       horse_listings: TableFrom<HorseListingRow>
@@ -302,7 +318,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      place_bid: {
+        Args: { p_auction_id: string; p_max_amount: number }
+        Returns: Json
+      }
+      close_auction_if_ended: {
+        Args: { p_auction: string }
+        Returns: undefined
+      }
+      get_auction_bid_history: {
+        Args: { p_auction: string }
+        Returns: {
+          bidder_label: string
+          amount: number
+          status: Enums["bid_status"]
+          placed_at: string
+        }[]
+      }
     }
     Enums: Enums
     CompositeTypes: {

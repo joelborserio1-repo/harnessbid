@@ -480,12 +480,17 @@ function SellerCard({ seller }: { seller: ReturnType<typeof toEquipmentListingVi
 export function AuctionListingDetail({
   listing: listingData,
   actionBar,
+  bidPanel,
+  bidHistory,
 }: {
   listing: HorseAuctionDetail
   actionBar?: React.ReactNode
+  bidPanel?: React.ReactNode
+  bidHistory?: Array<{ bidder: string; time: string; amount: number }>
 }) {
   const listing = toAuctionListingView(listingData)
   const [bidAmount, setBidAmount] = useState(listing.nextMinimumBid.toString())
+  const history = bidHistory ?? listing.bidHistory
 
   return (
     <div className="min-h-screen bg-background">
@@ -511,7 +516,7 @@ export function AuctionListingDetail({
 
             {/* Auction Info - Mobile */}
             <div className="lg:hidden">
-              <AuctionInfoCard listing={listing} bidAmount={bidAmount} setBidAmount={setBidAmount} />
+              <AuctionInfoCard listing={listing} bidAmount={bidAmount} setBidAmount={setBidAmount} bidPanel={bidPanel} />
             </div>
 
             {/* Description */}
@@ -550,15 +555,15 @@ export function AuctionListingDetail({
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {listing.bidHistory.length === 0 && (
+                  {history.length === 0 && (
                     <div className="rounded-lg border border-border bg-secondary/50 p-5 text-center">
-                      <p className="font-medium text-foreground">Bid history is not public yet</p>
+                      <p className="font-medium text-foreground">No bids yet</p>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        Bidding writes and history display remain disabled until the live auction workflow is connected.
+                        Be the first to place a bid on this lot.
                       </p>
                     </div>
                   )}
-                  {listing.bidHistory.map((bid, index) => (
+                  {history.map((bid, index) => (
                     <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -580,7 +585,7 @@ export function AuctionListingDetail({
           {/* Right Column - Sticky Sidebar */}
           <div className="hidden lg:block">
             <div className="sticky top-20 space-y-6">
-              <AuctionInfoCard listing={listing} bidAmount={bidAmount} setBidAmount={setBidAmount} />
+              <AuctionInfoCard listing={listing} bidAmount={bidAmount} setBidAmount={setBidAmount} bidPanel={bidPanel} />
               <SellerCard seller={listing.seller} />
             </div>
           </div>
@@ -613,14 +618,16 @@ export function AuctionListingDetail({
   )
 }
 
-function AuctionInfoCard({ 
-  listing, 
-  bidAmount, 
-  setBidAmount 
-}: { 
+function AuctionInfoCard({
+  listing,
+  bidAmount,
+  setBidAmount,
+  bidPanel,
+}: {
   listing: ReturnType<typeof toAuctionListingView>
   bidAmount: string
   setBidAmount: (value: string) => void
+  bidPanel?: React.ReactNode
 }) {
   return (
     <Card className="overflow-hidden">
@@ -664,30 +671,34 @@ function AuctionInfoCard({
 
           <Separator />
 
-          {/* Bidding placeholder */}
-          <div>
-            <p className="text-sm text-muted-foreground mb-2">
-              Enter {formatCurrency(listing.nextMinimumBid)} or more
-            </p>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                <Input
-                  type="number"
-                  value={bidAmount}
-                  onChange={(e) => setBidAmount(e.target.value)}
-                  className="pl-7"
-                  disabled
-                />
+          {/* Bidding */}
+          {bidPanel ? (
+            bidPanel
+          ) : (
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">
+                Enter {formatCurrency(listing.nextMinimumBid)} or more
+              </p>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                  <Input
+                    type="number"
+                    value={bidAmount}
+                    onChange={(e) => setBidAmount(e.target.value)}
+                    className="pl-7"
+                    disabled
+                  />
+                </div>
+                <Button className="bg-accent text-accent-foreground hover:bg-accent/90" disabled>
+                  Bidding Disabled
+                </Button>
               </div>
-              <Button className="bg-accent text-accent-foreground hover:bg-accent/90" disabled>
-                Bidding Disabled
-              </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                Bid increment: {formatCurrency(listing.bidIncrement)}
+              </p>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Bid increment: {formatCurrency(listing.bidIncrement)}
-            </p>
-          </div>
+          )}
 
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1">

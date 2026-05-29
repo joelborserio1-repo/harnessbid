@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EnterpriseRequestCard } from "@/components/enterprise-request-card"
+import type { SellerAuctionItem } from "@/lib/auctions/dashboard"
 
 export type SellerDashboardData = {
   name: string
@@ -83,7 +84,76 @@ function ListingsEmptyState() {
   )
 }
 
-export function SellerDashboard({ seller }: { seller: SellerDashboardData }) {
+function currencyShort(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+function SellerAuctionsCard({ auctions }: { auctions: SellerAuctionItem[] }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="font-sora text-lg">Your auctions</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {auctions.length === 0 ? (
+          <div className="rounded-lg border border-border bg-secondary/50 p-6 text-center text-sm text-muted-foreground">
+            No horse auctions yet.{" "}
+            <Link href="/sell/horse-auction" className="font-medium text-primary hover:underline">
+              Create an auction
+            </Link>
+            .
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {auctions.map((a) => (
+              <div key={a.auctionId} className="flex flex-col gap-2 rounded-lg bg-secondary p-3 sm:flex-row sm:items-center">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Link href={a.href} className="truncate font-medium text-foreground hover:text-primary">
+                      {a.title}
+                    </Link>
+                    <Badge variant="secondary">{a.status}</Badge>
+                    {a.reservePrice != null && (
+                      <Badge
+                        className={a.reserveMet ? "bg-accent text-accent-foreground" : undefined}
+                        variant={a.reserveMet ? undefined : "secondary"}
+                      >
+                        {a.reserveMet ? "Reserve met" : "Reserve not met"}
+                      </Badge>
+                    )}
+                    {a.closingSoon && (
+                      <Badge variant="secondary" className="text-destructive">
+                        Closing soon
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {currencyShort(a.currentBid)} · {a.bidCount} bids
+                  </p>
+                </div>
+                <Button asChild variant="outline" size="sm">
+                  <Link href={a.href}>View</Link>
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+export function SellerDashboard({
+  seller,
+  auctions = [],
+}: {
+  seller: SellerDashboardData
+  auctions?: SellerAuctionItem[]
+}) {
   const verification = VERIFICATION_COPY[seller.verificationStatus] ?? VERIFICATION_COPY.unverified
   const storefrontHref = `/seller/${seller.slug}`
 
@@ -179,6 +249,8 @@ export function SellerDashboard({ seller }: { seller: SellerDashboardData }) {
                 </Tabs>
               </CardContent>
             </Card>
+
+            <SellerAuctionsCard auctions={auctions} />
 
             {/* Seller profile summary */}
             <Card>

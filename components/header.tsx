@@ -230,6 +230,12 @@ export function Header() {
                       Saved Searches
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/bids" className="flex cursor-pointer items-center gap-2">
+                      <Gavel className="h-4 w-4 text-muted-foreground" />
+                      My Bids
+                    </Link>
+                  </DropdownMenuItem>
                   {isEnterprise && sellerSlug && (
                     <DropdownMenuItem asChild>
                       <Link href={`/seller/${sellerSlug}`} className="flex cursor-pointer items-center gap-2">

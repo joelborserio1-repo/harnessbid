@@ -6,8 +6,14 @@ import { Gavel } from "lucide-react"
 import { getHorseAuction } from "@/lib/supabase/queries"
 import { WatchButton } from "@/components/listings/watch-button"
 import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
+import { BidPanel } from "@/components/auctions/bid-panel"
 import { isListingWatched } from "@/lib/listings/watchlist"
 import { viewerOwnsListing } from "@/lib/enquiries/queries"
+import {
+  closeAuctionIfEnded,
+  getAuctionBidHistory,
+  getViewerAuctionState,
+} from "@/lib/auctions/queries"
 
 export default async function AuctionDetailPage({
   params,
@@ -43,30 +49,55 @@ export default async function AuctionDetailPage({
     )
   }
 
-  const [watched, isOwner] = await Promise.all([
+  // Lazily settle the auction if its end time has passed (no-op otherwise),
+  // then load the post-close state.
+  await closeAuctionIfEnded(auction.data.id)
+
+  const [watched, isOwner, bidHistory, viewerState] = await Promise.all([
     isListingWatched(auction.data.recordId, "horse"),
     viewerOwnsListing("horse", auction.data.recordId),
+    getAuctionBidHistory(auction.data.id),
+    getViewerAuctionState(auction.data.id),
   ])
+
+  const a = auction.data
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 pb-20 lg:pb-0">
         <AuctionListingDetail
-          listing={auction.data}
+          listing={a}
+          bidHistory={bidHistory}
           actionBar={
             <>
               <WatchButton
-                listingId={auction.data.recordId}
+                listingId={a.recordId}
                 kind="horse"
                 initialWatched={watched}
                 variant="full"
               />
               <EnquiryDialog
-                targets={[{ id: auction.data.recordId, kind: "horse", label: auction.data.title }]}
+                targets={[{ id: a.recordId, kind: "horse", label: a.title }]}
                 isOwner={isOwner}
               />
             </>
+          }
+          bidPanel={
+            isOwner ? undefined : (
+              <BidPanel
+                auctionId={a.id}
+                listingSlug={a.listingSlug}
+                authenticated={viewerState.authenticated}
+                initialLeading={viewerState.leading}
+                currentBid={a.currentBid}
+                bidCount={a.bids}
+                bidIncrement={a.bidIncrement}
+                reservePrice={a.reservePrice}
+                reserveMet={a.reserveMet}
+                startingBid={a.startingBid}
+              />
+            )
           }
         />
       </main>

@@ -3,6 +3,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { SellerDashboard } from "@/components/seller-dashboard"
 import { getOwnedSellerContext, getSessionUser } from "@/lib/supabase/auth-server"
+import { getSellerAuctionSummary } from "@/lib/auctions/dashboard"
 
 // Auth depends on per-request cookies; never statically prerender.
 export const dynamic = "force-dynamic"
@@ -21,6 +22,8 @@ export default async function DashboardPage() {
   // Sellers must complete onboarding before reaching dashboard tools.
   const seller = await getOwnedSellerContext()
   if (!seller) redirect("/onboarding")
+
+  const auctions = await getSellerAuctionSummary()
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -45,6 +48,7 @@ export default async function DashboardPage() {
               ? seller.enterprise.onboardingStatus.replace(/_/g, " ")
               : null,
           }}
+          auctions={auctions}
         />
       </main>
       <Footer />
