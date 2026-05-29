@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { WatchButton } from "@/components/listings/watch-button"
+import { SaveSearchButton } from "@/components/saved-searches/save-search-button"
 import {
   Search,
   MapPin,
@@ -423,6 +424,8 @@ export function MarketplaceBrowse({ listings, categories }: { listings: Marketpl
                     <SelectItem value="ending-soon">Ending Soon</SelectItem>
                   </SelectContent>
                 </Select>
+
+                <SaveSearchButton searchType="marketplace" />
               </div>
 
               {/* View Toggle */}

@@ -87,6 +87,30 @@ type EnquiryRow = {
   updated_at: string
 }
 
+type NotificationRow = {
+  id: string
+  profile_id: string
+  type: string
+  title: string
+  body: string | null
+  link_url: string | null
+  related_entity_type: string | null
+  related_entity_id: string | null
+  read_at: string | null
+  created_at: string
+}
+
+type SavedSearchRow = {
+  id: string
+  profile_id: string
+  name: string
+  search_type: string
+  filters: Json
+  alert_enabled: boolean
+  created_at: string
+  updated_at: string
+}
+
 type AuctionRow = {
   id: string
   horse_listing_id: string | null
@@ -265,6 +289,8 @@ export type Database = {
       enterprise_sellers: TableFrom<EnterpriseSellerRow>
       watchlists: TableFrom<WatchlistRow>
       enquiries: TableFrom<EnquiryRow>
+      notifications: TableFrom<NotificationRow>
+      saved_searches: TableFrom<SavedSearchRow>
       auctions: TableFrom<AuctionRow>
       categories: TableFrom<CategoryRow>
       horse_listings: TableFrom<HorseListingRow>

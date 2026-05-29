@@ -24,7 +24,8 @@ import {
   LayoutDashboard,
   LogOut,
   Package,
-  Store
+  Store,
+  Bell
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -36,6 +37,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { useAuthUser } from "@/hooks/use-auth-user"
+import { NotificationsMenu } from "@/components/notifications/notifications-menu"
 
 const horseCategories = [
   { name: "Live Auctions", icon: Gavel, href: "/auctions" },
@@ -185,6 +187,7 @@ export function Header() {
                 <span className="sr-only">Watchlist</span>
               </Link>
             </Button>
+            <NotificationsMenu />
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -219,6 +222,12 @@ export function Header() {
                     <Link href="/watchlist" className="flex cursor-pointer items-center gap-2">
                       <Heart className="h-4 w-4 text-muted-foreground" />
                       Saved Listings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/saved-searches" className="flex cursor-pointer items-center gap-2">
+                      <Search className="h-4 w-4 text-muted-foreground" />
+                      Saved Searches
                     </Link>
                   </DropdownMenuItem>
                   {isEnterprise && sellerSlug && (
@@ -335,6 +344,14 @@ export function Header() {
                   >
                     <Package className="h-5 w-5" />
                     My Listings
+                  </Link>
+                  <Link
+                    href="/dashboard/notifications"
+                    className="flex items-center gap-2 px-4 py-2 text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Bell className="h-5 w-5" />
+                    Notifications
                   </Link>
                   {isEnterprise && sellerSlug && (
                     <Link

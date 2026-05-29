@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { WatchButton } from "@/components/listings/watch-button"
+import { SaveSearchButton } from "@/components/saved-searches/save-search-button"
 import type { HorseAuctionCard } from "@/lib/supabase/queries"
 
 function formatCurrency(amount: number) {
@@ -59,10 +60,10 @@ export function AuctionBrowse({ auctions }: { auctions: HorseAuctionCard[] }) {
           <p className="text-sm text-muted-foreground">
             {auctions.length} live horse auctions
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary">Live now</Badge>
             <Badge variant="secondary">Verified sellers</Badge>
-            <Badge variant="secondary">Reserve details</Badge>
+            <SaveSearchButton searchType="horse_auction" />
           </div>
         </div>
 

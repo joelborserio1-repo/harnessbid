@@ -122,6 +122,10 @@ export async function createEnquiryAction(
     return { error: "Could not send your enquiry. Please try again." }
   }
 
+  // The seller's "enquiry_received" notification is created by the
+  // `notify_seller_of_enquiry` SECURITY DEFINER trigger (one per enquiry),
+  // so no app-side notification insert is needed here (avoids duplicates).
+
   revalidatePath("/dashboard/messages")
   return { success: true, message: "Your enquiry has been sent to the seller." }
 }
