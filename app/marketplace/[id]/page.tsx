@@ -6,6 +6,7 @@ import { WatchButton } from "@/components/listings/watch-button"
 import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
 import { isListingWatched } from "@/lib/listings/watchlist"
 import { viewerOwnsListing } from "@/lib/enquiries/queries"
+import { ReportListingButton } from "@/components/listings/report-listing-button"
 
 export default async function MarketplaceDetailPage({
   params,
@@ -57,6 +58,7 @@ export default async function MarketplaceDetailPage({
                 ]}
                 isOwner={isOwner}
               />
+              <ReportListingButton listingId={listing.data.recordId} kind="marketplace" />
             </>
           }
         />

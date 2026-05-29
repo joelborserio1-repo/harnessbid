@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 type Enums = {
-  app_role: "buyer" | "seller" | "enterprise_seller" | "admin"
+  app_role: "buyer" | "seller" | "enterprise_seller" | "admin" | "moderator" | "enterprise_manager"
   auction_status: "draft" | "scheduled" | "live" | "extended" | "closed" | "settled" | "cancelled"
   bid_status: "active" | "outbid" | "winning" | "won" | "retracted" | "rejected"
   category_type: "horse" | "marketplace" | "service" | "content"
@@ -86,6 +86,49 @@ type EnquiryRow = {
   metadata: Json
   created_at: string
   updated_at: string
+}
+
+type SaleEventRow = {
+  id: string
+  seller_account_id: string | null
+  enterprise_seller_id: string | null
+  name: string
+  slug: string
+  event_type: string
+  status: string
+  description: string | null
+  hero_image_url: string | null
+  timezone: string
+  starts_at: string | null
+  ends_at: string | null
+  settlement_due_at: string | null
+  terms_url: string | null
+  metadata: Json
+  created_at: string
+  updated_at: string
+}
+
+type ListingReportRow = {
+  id: string
+  reporter_profile_id: string | null
+  horse_listing_id: string | null
+  marketplace_listing_id: string | null
+  reason: string
+  details: string | null
+  status: string
+  reviewer_profile_id: string | null
+  reviewed_at: string | null
+  created_at: string
+}
+
+type ModerationLogRow = {
+  id: string
+  actor_profile_id: string | null
+  action: string
+  entity_type: string
+  entity_id: string | null
+  notes: string | null
+  created_at: string
 }
 
 type BidRow = {
@@ -307,6 +350,9 @@ export type Database = {
       notifications: TableFrom<NotificationRow>
       saved_searches: TableFrom<SavedSearchRow>
       bids: TableFrom<BidRow>
+      listing_reports: TableFrom<ListingReportRow>
+      moderation_logs: TableFrom<ModerationLogRow>
+      sale_events: TableFrom<SaleEventRow>
       auctions: TableFrom<AuctionRow>
       categories: TableFrom<CategoryRow>
       horse_listings: TableFrom<HorseListingRow>

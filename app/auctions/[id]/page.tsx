@@ -7,6 +7,7 @@ import { getHorseAuction } from "@/lib/supabase/queries"
 import { WatchButton } from "@/components/listings/watch-button"
 import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
 import { BidPanel } from "@/components/auctions/bid-panel"
+import { ReportListingButton } from "@/components/listings/report-listing-button"
 import { isListingWatched } from "@/lib/listings/watchlist"
 import { viewerOwnsListing } from "@/lib/enquiries/queries"
 import {
@@ -81,6 +82,7 @@ export default async function AuctionDetailPage({
                 targets={[{ id: a.recordId, kind: "horse", label: a.title }]}
                 isOwner={isOwner}
               />
+              <ReportListingButton listingId={a.recordId} kind="horse" />
             </>
           }
           bidPanel={
