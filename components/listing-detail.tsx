@@ -209,7 +209,7 @@ function toAuctionListingView(data: HorseAuctionDetail) {
       responseTime: data.sellerResponseTime,
       avatar: data.sellerAvatar,
     },
-    bidHistory: [],
+    bidHistory: [] as Array<{ bidder: string; time: string; amount: number }>,
     specs: data.specs,
   }
 }
