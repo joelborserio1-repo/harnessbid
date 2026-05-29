@@ -156,6 +156,52 @@ export async function createSaleEventAction(
   return { error: lastError ?? "Could not create the sale event." }
 }
 
+/** Feature / order / banner controls for a sale event. */
+export async function updateSaleEventAdminAction(formData: FormData): Promise<void> {
+  await requireStaff()
+  if (!hasSupabaseEnv()) return
+  const supabase = await createSupabaseServerAuthClient()
+
+  const id = String(formData.get("id") ?? "")
+  const field = String(formData.get("field") ?? "")
+  const value = String(formData.get("value") ?? "")
+  if (!id) return
+
+  const patch: Record<string, unknown> = {}
+  if (field === "featured") patch.featured = value === "true"
+  else if (field === "sort_order") {
+    const n = Number(value)
+    if (Number.isFinite(n)) patch.sort_order = n
+    else return
+  } else if (field === "hero_image_url") patch.hero_image_url = value || null
+  else return
+
+  await supabase.from("sale_events").update(patch as never).eq("id", id)
+  await logModeration("sale_event_admin", "sale_event", id, `${field}=${value}`)
+  revalidatePath("/admin/sale-events")
+}
+
+/** Assign or unassign a listing to a sale event, with an optional lot number. */
+export async function assignListingToEventAction(formData: FormData): Promise<void> {
+  await requireStaff()
+  if (!hasSupabaseEnv()) return
+  const supabase = await createSupabaseServerAuthClient()
+
+  const kind = String(formData.get("kind") ?? "")
+  const listingId = String(formData.get("listingId") ?? "").trim()
+  const eventId = String(formData.get("eventId") ?? "").trim()
+  const lotNumber = String(formData.get("lotNumber") ?? "").trim()
+  if (!listingId || (kind !== "horse" && kind !== "marketplace")) return
+
+  const table = kind === "horse" ? "horse_listings" : "marketplace_listings"
+  await supabase
+    .from(table)
+    .update({ sale_event_id: eventId || null, lot_number: lotNumber || null } as never)
+    .eq("id", listingId)
+  await logModeration(eventId ? "listing_assign_event" : "listing_unassign_event", kind, listingId, eventId)
+  revalidatePath("/admin/sale-events")
+}
+
 /** Set a seller's billing model / fee exemption (commercial controls). */
 export async function setSellerBillingAction(formData: FormData): Promise<void> {
   await requireStaff()

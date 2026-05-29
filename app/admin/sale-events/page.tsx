@@ -1,9 +1,14 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { CreateSaleEventForm } from "@/components/admin/create-sale-event-form"
 import { getAdminSaleEvents } from "@/lib/admin/queries"
-import { updateSaleEventStatusAction } from "@/lib/admin/actions"
+import {
+  assignListingToEventAction,
+  updateSaleEventAdminAction,
+  updateSaleEventStatusAction,
+} from "@/lib/admin/actions"
 
 export const dynamic = "force-dynamic"
 
@@ -66,7 +71,45 @@ export default async function AdminSaleEventsPage() {
                       </Button>
                     </form>
                   ))}
+                  <form action={updateSaleEventAdminAction}>
+                    <input type="hidden" name="id" value={e.id} />
+                    <input type="hidden" name="field" value="featured" />
+                    <input type="hidden" name="value" value="true" />
+                    <Button type="submit" size="sm" variant="ghost">Feature</Button>
+                  </form>
+                  <form action={updateSaleEventAdminAction}>
+                    <input type="hidden" name="id" value={e.id} />
+                    <input type="hidden" name="field" value="featured" />
+                    <input type="hidden" name="value" value="false" />
+                    <Button type="submit" size="sm" variant="ghost">Unfeature</Button>
+                  </form>
                 </div>
+              </CardContent>
+              <CardContent className="flex flex-wrap items-end gap-2 border-t border-border p-4 pt-3">
+                <form action={updateSaleEventAdminAction} className="flex items-end gap-1">
+                  <input type="hidden" name="id" value={e.id} />
+                  <input type="hidden" name="field" value="sort_order" />
+                  <Input name="value" placeholder="Order" inputMode="numeric" className="h-9 w-20" aria-label="Sort order" />
+                  <Button type="submit" size="sm" variant="outline">Order</Button>
+                </form>
+                <form action={updateSaleEventAdminAction} className="flex flex-1 items-end gap-1">
+                  <input type="hidden" name="id" value={e.id} />
+                  <input type="hidden" name="field" value="hero_image_url" />
+                  <Input name="value" placeholder="Banner image URL" className="h-9 min-w-48 flex-1" aria-label="Banner URL" />
+                  <Button type="submit" size="sm" variant="outline">Banner</Button>
+                </form>
+                <form action={assignListingToEventAction} className="flex flex-wrap items-end gap-1">
+                  <input type="hidden" name="eventId" value={e.id} />
+                  <select name="kind" defaultValue="horse" className="h-9 rounded-md border border-input bg-background px-2 text-sm" aria-label="Listing kind">
+                    <option value="horse">Horse</option>
+                    <option value="marketplace">Marketplace</option>
+                  </select>
+                  <Input name="listingId" placeholder="Listing ID (UUID)" className="h-9 w-44" aria-label="Listing ID" />
+                  <Input name="lotNumber" placeholder="Lot #" className="h-9 w-20" aria-label="Lot number" />
+                  <Button type="submit" size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90">
+                    Assign lot
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           ))}

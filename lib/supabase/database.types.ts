@@ -169,6 +169,8 @@ type SaleEventRow = {
   ends_at: string | null
   settlement_due_at: string | null
   terms_url: string | null
+  featured: boolean
+  sort_order: number
   metadata: Json
   created_at: string
   updated_at: string
@@ -320,6 +322,8 @@ type HorseListingRow = {
   listing_fee_status: string
   featured_fee_status: string
   featured_until: string | null
+  lot_number: string | null
+  lot_order: number | null
   created_at: string
   updated_at: string
 }
@@ -343,6 +347,7 @@ type MarketplaceListingRow = {
   id: string
   seller_account_id: string
   category_id: string | null
+  sale_event_id: string | null
   title: string
   slug: string
   status: Enums["listing_status"]
@@ -372,6 +377,8 @@ type MarketplaceListingRow = {
   expires_at: string | null
   listing_fee_status: string
   featured_fee_status: string
+  lot_number: string | null
+  lot_order: number | null
   created_at: string
   updated_at: string
 }
