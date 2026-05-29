@@ -176,6 +176,32 @@ type SaleEventRow = {
   updated_at: string
 }
 
+type ConversationRow = {
+  id: string
+  enquiry_id: string | null
+  buyer_profile_id: string
+  seller_account_id: string
+  seller_owner_profile_id: string
+  horse_listing_id: string | null
+  marketplace_listing_id: string | null
+  sale_event_id: string | null
+  subject: string | null
+  last_message_at: string
+  created_at: string
+  updated_at: string
+}
+
+type MessageRow = {
+  id: string
+  conversation_id: string
+  sender_profile_id: string
+  body: string
+  attachment_url: string | null
+  attachment_type: string | null
+  read_at: string | null
+  created_at: string
+}
+
 type ListingReportRow = {
   id: string
   reporter_profile_id: string | null
@@ -435,6 +461,8 @@ export type Database = {
       bids: TableFrom<BidRow>
       listing_reports: TableFrom<ListingReportRow>
       moderation_logs: TableFrom<ModerationLogRow>
+      conversations: TableFrom<ConversationRow>
+      messages: TableFrom<MessageRow>
       sale_events: TableFrom<SaleEventRow>
       payment_intents: TableFrom<PaymentIntentRow>
       auction_deposits: TableFrom<AuctionDepositRow>
