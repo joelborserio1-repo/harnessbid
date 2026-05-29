@@ -5,6 +5,7 @@ import { getMarketplaceListing } from "@/lib/supabase/queries"
 import { WatchButton } from "@/components/listings/watch-button"
 import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
 import { isListingWatched } from "@/lib/listings/watchlist"
+import { viewerOwnsListing } from "@/lib/enquiries/queries"
 
 export default async function MarketplaceDetailPage({
   params,
@@ -34,7 +35,10 @@ export default async function MarketplaceDetailPage({
   }
 
   if (listing.data) {
-    const watched = await isListingWatched(listing.data.recordId, "marketplace")
+    const [watched, isOwner] = await Promise.all([
+      isListingWatched(listing.data.recordId, "marketplace"),
+      viewerOwnsListing("marketplace", listing.data.recordId),
+    ])
     return (
       <PageFrame>
         <EquipmentListingDetail
@@ -51,6 +55,7 @@ export default async function MarketplaceDetailPage({
                 targets={[
                   { id: listing.data.recordId, kind: "marketplace", label: listing.data.title },
                 ]}
+                isOwner={isOwner}
               />
             </>
           }

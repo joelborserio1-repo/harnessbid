@@ -4,6 +4,52 @@ import {
 } from "@/lib/supabase/auth-server"
 import type { Database } from "@/lib/supabase/database.types"
 
+/** True when the signed-in user owns the given seller account. */
+export async function viewerOwnsSeller(sellerAccountId: string): Promise<boolean> {
+  if (!hasSupabaseEnv() || !sellerAccountId) return false
+  const supabase = await createSupabaseServerAuthClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return false
+  const { data } = await supabase
+    .from("seller_accounts")
+    .select("id")
+    .eq("id", sellerAccountId)
+    .eq("owner_profile_id", user.id)
+    .maybeSingle()
+  return Boolean(data)
+}
+
+/** True when the signed-in user owns the listing (via its seller account). */
+export async function viewerOwnsListing(
+  kind: "horse" | "marketplace",
+  listingId: string,
+): Promise<boolean> {
+  if (!hasSupabaseEnv() || !listingId) return false
+  const supabase = await createSupabaseServerAuthClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return false
+
+  const table = kind === "horse" ? "horse_listings" : "marketplace_listings"
+  const { data: listing } = await supabase
+    .from(table)
+    .select("seller_account_id")
+    .eq("id", listingId)
+    .maybeSingle()
+  if (!listing) return false
+
+  const { data: account } = await supabase
+    .from("seller_accounts")
+    .select("id")
+    .eq("id", listing.seller_account_id)
+    .eq("owner_profile_id", user.id)
+    .maybeSingle()
+  return Boolean(account)
+}
+
 export type EnquiryView = {
   id: string
   direction: "received" | "sent"

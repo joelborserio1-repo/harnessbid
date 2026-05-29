@@ -5,6 +5,7 @@ import { getBuyNowHorse } from "@/lib/supabase/queries"
 import { WatchButton } from "@/components/listings/watch-button"
 import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
 import { isListingWatched } from "@/lib/listings/watchlist"
+import { viewerOwnsListing } from "@/lib/enquiries/queries"
 
 export default async function BuyNowHorseDetailPage({
   params,
@@ -40,7 +41,10 @@ export default async function BuyNowHorseDetailPage({
     )
   }
 
-  const watched = await isListingWatched(listing.data.recordId, "horse")
+  const [watched, isOwner] = await Promise.all([
+    isListingWatched(listing.data.recordId, "horse"),
+    viewerOwnsListing("horse", listing.data.recordId),
+  ])
 
   return (
     <PageFrame>
@@ -56,6 +60,7 @@ export default async function BuyNowHorseDetailPage({
             />
             <EnquiryDialog
               targets={[{ id: listing.data.recordId, kind: "horse", label: listing.data.title }]}
+              isOwner={isOwner}
             />
           </>
         }

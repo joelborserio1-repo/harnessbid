@@ -14,6 +14,25 @@ const hasEnv = Boolean(
 type WatchedSets = { horse: Set<string>; marketplace: Set<string> }
 let watchedCache: Promise<WatchedSets> | null = null
 
+// Listeners let every mounted WatchButton re-resolve when auth changes.
+const listeners = new Set<() => void>()
+let authSubInitialised = false
+
+function ensureAuthSubscription() {
+  if (authSubInitialised || !hasEnv) return
+  authSubInitialised = true
+  try {
+    createSupabaseBrowserClient().auth.onAuthStateChange(() => {
+      // Invalidate the cached watched-set on login/logout/token refresh and
+      // notify mounted buttons so stale states don't persist across sessions.
+      watchedCache = null
+      listeners.forEach((fn) => fn())
+    })
+  } catch {
+    /* env not configured */
+  }
+}
+
 function loadWatchedSets(): Promise<WatchedSets> {
   if (!watchedCache) {
     watchedCache = (async () => {
@@ -68,13 +87,24 @@ export function WatchButton({
   const [pending, startTransition] = useTransition()
 
   useEffect(() => {
-    if (initialWatched !== undefined) return
+    ensureAuthSubscription()
     let active = true
-    loadWatchedSets().then((sets) => {
-      if (active) setWatched(sets[kind].has(listingId))
-    })
+
+    const resolve = () => {
+      loadWatchedSets().then((sets) => {
+        if (active) setWatched(sets[kind].has(listingId))
+      })
+    }
+
+    // Resolve initial state from the cache when not provided by the server.
+    if (initialWatched === undefined) resolve()
+
+    // Re-resolve on auth changes (login/logout) for every button, including
+    // server-seeded ones, so watched state never goes stale across sessions.
+    listeners.add(resolve)
     return () => {
       active = false
+      listeners.delete(resolve)
     }
   }, [initialWatched, kind, listingId])
 

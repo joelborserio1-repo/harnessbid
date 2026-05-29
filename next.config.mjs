@@ -8,6 +8,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    // Lint is run separately via `npm run lint`; keep production builds
+    // independent of lint results.
+    ignoreDuringBuilds: true,
+  },
   images: {
     unoptimized: true,
   },

@@ -75,6 +75,36 @@ export async function createEnquiryAction(
     return { error: "You can't send an enquiry on your own listing." }
   }
 
+  // Conservative anti-spam rate limit (placeholder; a durable solution would
+  // use a counter table or edge rate limiter):
+  //  - block a repeat enquiry to the same listing within 60 seconds
+  //  - cap enquiries to the same seller at 5 per rolling hour
+  const listingColumn = kind === "horse" ? "horse_listing_id" : "marketplace_listing_id"
+  const sixtySecondsAgo = new Date(Date.now() - 60_000).toISOString()
+  const oneHourAgo = new Date(Date.now() - 3_600_000).toISOString()
+
+  const { data: recentSameListing } = await supabase
+    .from("enquiries")
+    .select("id")
+    .eq("sender_profile_id", user.id)
+    .eq(listingColumn, listingId)
+    .gte("created_at", sixtySecondsAgo)
+    .limit(1)
+    .maybeSingle()
+  if (recentSameListing) {
+    return { error: "You just sent an enquiry about this listing. Please wait a moment before sending another." }
+  }
+
+  const { count: sellerHourCount } = await supabase
+    .from("enquiries")
+    .select("id", { count: "exact", head: true })
+    .eq("sender_profile_id", user.id)
+    .eq("seller_account_id", listing.seller_account_id)
+    .gte("created_at", oneHourAgo)
+  if ((sellerHourCount ?? 0) >= 5) {
+    return { error: "You've sent several enquiries to this seller recently. Please try again later." }
+  }
+
   const { error } = await supabase.from("enquiries").insert({
     sender_profile_id: user.id,
     seller_account_id: listing.seller_account_id,

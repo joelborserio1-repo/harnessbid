@@ -28,7 +28,13 @@ function formatDate(value: string | null) {
   }).format(new Date(value))
 }
 
-export function SellerStorefrontPage({ storefront }: { storefront: SellerStorefront }) {
+export function SellerStorefrontPage({
+  storefront,
+  isOwner = false,
+}: {
+  storefront: SellerStorefront
+  isOwner?: boolean
+}) {
   const { seller, enterprise, saleEvents, marketplaceListings, horseAuctions } = storefront
   const hasActivity = saleEvents.length > 0 || marketplaceListings.length > 0 || horseAuctions.length > 0
 
@@ -92,7 +98,14 @@ export function SellerStorefrontPage({ storefront }: { storefront: SellerStorefr
               <div className="mt-4">
                 <EnquiryDialog
                   targets={enquiryTargets}
-                  triggerLabel={enquiryTargets.length ? "Contact seller" : "No listings to enquire about"}
+                  isOwner={isOwner}
+                  triggerLabel={
+                    isOwner
+                      ? "This is your storefront"
+                      : enquiryTargets.length
+                        ? "Contact seller"
+                        : "No listings to enquire about"
+                  }
                 />
               </div>
             </div>

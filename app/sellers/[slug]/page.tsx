@@ -1,6 +1,7 @@
 import { SellerStorefrontPage } from "@/components/seller-storefront"
 import { EmptyStatePage } from "@/components/static-pages"
 import { getSellerStorefront } from "@/lib/supabase/queries"
+import { viewerOwnsSeller } from "@/lib/enquiries/queries"
 import { Building2, Search } from "lucide-react"
 
 export default async function SellerPage({
@@ -38,5 +39,6 @@ export default async function SellerPage({
     )
   }
 
-  return <SellerStorefrontPage storefront={storefront.data} />
+  const isOwner = await viewerOwnsSeller(storefront.data.seller.id)
+  return <SellerStorefrontPage storefront={storefront.data} isOwner={isOwner} />
 }
