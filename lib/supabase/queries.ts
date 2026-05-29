@@ -311,6 +311,23 @@ export async function getMarketplaceCategories(): Promise<QueryResult<Marketplac
   )
 }
 
+export type CategoryOption = { id: string; name: string; slug: string }
+
+export async function getMarketplaceCategoryOptions(): Promise<QueryResult<CategoryOption[]>> {
+  const setup = getClientOrEmpty<CategoryOption[]>([])
+  if (setup.result) return setup.result
+
+  const { data, error } = await setup.client
+    .from("categories")
+    .select("id, name, slug")
+    .in("category_type", ["marketplace", "service"])
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true })
+
+  if (error) return emptyResult([], error.message)
+  return emptyResult((data ?? []).map((c) => ({ id: c.id, name: c.name, slug: c.slug })))
+}
+
 export async function getMarketplaceListings(limit = 12): Promise<QueryResult<MarketplaceCard[]>> {
   const setup = getClientOrEmpty<MarketplaceCard[]>([])
   if (setup.result) return setup.result

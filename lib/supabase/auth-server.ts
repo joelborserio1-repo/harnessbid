@@ -142,6 +142,27 @@ export async function getOwnedSellerAccount(): Promise<SellerAccountSummary | nu
   }
 }
 
+export type SellerPreview = {
+  name: string
+  slug: string
+  verified: boolean
+  isEnterprise: boolean
+  avatar: string
+  memberSince: string
+}
+
+/** Maps seller context into the lightweight shape the listing previews need. */
+export function toSellerPreview(ctx: SellerContext): SellerPreview {
+  return {
+    name: ctx.displayName,
+    slug: ctx.slug,
+    verified: ctx.verificationStatus === "verified",
+    isEnterprise: ctx.isEnterprise,
+    avatar: ctx.logoUrl ?? "/placeholder-user.jpg",
+    memberSince: ctx.createdAt ? new Date(ctx.createdAt).getFullYear().toString() : "New seller",
+  }
+}
+
 export type SellerContext = {
   id: string
   displayName: string

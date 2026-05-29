@@ -1,5 +1,5 @@
-import { SellerActionPage } from "@/components/static-pages"
+import { redirect } from "next/navigation"
 
 export default function NewListingPage() {
-  return <SellerActionPage type="new" />
+  redirect("/sell")
 }
