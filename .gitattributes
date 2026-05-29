@@ -1,0 +1,4 @@
+# Keep heavy / non-deployable paths out of `git archive` (used by deploy/deploy.sh).
+harnessbid-github-clean-split.zip export-ignore
+legacy-xcloud-fixes/ export-ignore
+.github/ export-ignore
