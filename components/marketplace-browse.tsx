@@ -3,9 +3,10 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { 
-  Search, 
-  MapPin, 
+import { WatchButton } from "@/components/listings/watch-button"
+import {
+  Search,
+  MapPin,
   Heart,
   ChevronDown,
   Grid3X3,
@@ -320,16 +321,10 @@ function ListingCard({ listing, view = "grid" }: { listing: MarketplaceCard, vie
           </Badge>
           
           {/* Watchlist Button */}
-          <button 
-            className="absolute bottom-3 right-3 p-2 rounded-full bg-card/80 hover:bg-card text-foreground transition-colors opacity-0 group-hover:opacity-100"
-            onClick={(e) => {
-              e.preventDefault()
-            }}
-            aria-label="Add to watchlist"
-          >
-            <Heart className="h-4 w-4" />
-          </button>
-          
+          <div className="absolute bottom-3 right-3 opacity-0 transition-opacity group-hover:opacity-100">
+            <WatchButton listingId={listing.recordId} kind="marketplace" variant="icon" />
+          </div>
+
         </div>
         
         <CardContent className="p-4">

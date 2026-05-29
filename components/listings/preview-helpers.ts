@@ -91,6 +91,7 @@ export function buildHorsePreview(
 
   return {
     id: "preview",
+    recordId: "preview",
     listingId: "preview",
     title,
     name: title,
@@ -133,6 +134,7 @@ function baseMarketplacePreview(
   const images = imageUrls(fd)
   return {
     id: "preview",
+    recordId: "preview",
     title: str(fd, "title") || "Untitled listing",
     price: money(fd, "price"),
     image: images[0],

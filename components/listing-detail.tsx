@@ -214,7 +214,13 @@ function toAuctionListingView(data: HorseAuctionDetail) {
   }
 }
 
-export function EquipmentListingDetail({ listing: listingData }: { listing: MarketplaceDetail }) {
+export function EquipmentListingDetail({
+  listing: listingData,
+  actionBar,
+}: {
+  listing: MarketplaceDetail
+  actionBar?: React.ReactNode
+}) {
   const listing = toEquipmentListingView(listingData)
 
   return (
@@ -238,6 +244,7 @@ export function EquipmentListingDetail({ listing: listingData }: { listing: Mark
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Images & Details */}
           <div className="lg:col-span-2 space-y-8">
+            {actionBar && <div className="flex flex-wrap items-center gap-2">{actionBar}</div>}
             <ImageGallery images={listing.images} />
 
             {/* Listing Info - Mobile */}
@@ -470,7 +477,13 @@ function SellerCard({ seller }: { seller: ReturnType<typeof toEquipmentListingVi
   )
 }
 
-export function AuctionListingDetail({ listing: listingData }: { listing: HorseAuctionDetail }) {
+export function AuctionListingDetail({
+  listing: listingData,
+  actionBar,
+}: {
+  listing: HorseAuctionDetail
+  actionBar?: React.ReactNode
+}) {
   const listing = toAuctionListingView(listingData)
   const [bidAmount, setBidAmount] = useState(listing.nextMinimumBid.toString())
 
@@ -493,6 +506,7 @@ export function AuctionListingDetail({ listing: listingData }: { listing: HorseA
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Images & Details */}
           <div className="lg:col-span-2 space-y-8">
+            {actionBar && <div className="flex flex-wrap items-center gap-2">{actionBar}</div>}
             <ImageGallery images={listing.images} />
 
             {/* Auction Info - Mobile */}

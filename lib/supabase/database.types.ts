@@ -10,6 +10,7 @@ type Enums = {
   app_role: "buyer" | "seller" | "enterprise_seller" | "admin"
   auction_status: "draft" | "scheduled" | "live" | "extended" | "closed" | "settled" | "cancelled"
   category_type: "horse" | "marketplace" | "service" | "content"
+  enquiry_status: "open" | "replied" | "closed" | "spam" | "archived"
   enterprise_tier: "standard" | "preferred" | "premier" | "strategic"
   onboarding_status: "draft" | "invited" | "in_review" | "active" | "paused" | "offboarded"
   horse_gait: "pacer" | "trotter" | "dual_gaited" | "unknown"
@@ -52,6 +53,36 @@ type EnterpriseSellerRow = {
   featured_until: string | null
   brand_settings: Json
   billing_settings: Json
+  created_at: string
+  updated_at: string
+}
+
+type WatchlistRow = {
+  id: string
+  profile_id: string
+  horse_listing_id: string | null
+  marketplace_listing_id: string | null
+  auction_id: string | null
+  note: string | null
+  created_at: string
+}
+
+type EnquiryRow = {
+  id: string
+  sender_profile_id: string | null
+  seller_account_id: string
+  horse_listing_id: string | null
+  marketplace_listing_id: string | null
+  sale_event_id: string | null
+  subject: string | null
+  message: string
+  contact_name: string | null
+  contact_email: string | null
+  contact_phone: string | null
+  status: Enums["enquiry_status"]
+  read_at: string | null
+  replied_at: string | null
+  metadata: Json
   created_at: string
   updated_at: string
 }
@@ -232,6 +263,8 @@ export type Database = {
     Tables: {
       profiles: TableFrom<ProfileRow>
       enterprise_sellers: TableFrom<EnterpriseSellerRow>
+      watchlists: TableFrom<WatchlistRow>
+      enquiries: TableFrom<EnquiryRow>
       auctions: TableFrom<AuctionRow>
       categories: TableFrom<CategoryRow>
       horse_listings: TableFrom<HorseListingRow>

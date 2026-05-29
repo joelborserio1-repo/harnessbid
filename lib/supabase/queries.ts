@@ -56,6 +56,7 @@ export type MarketplaceCategory = {
 
 export type MarketplaceCard = {
   id: string
+  recordId: string
   title: string
   price: number
   image: string
@@ -71,6 +72,7 @@ export type MarketplaceCard = {
 
 export type HorseAuctionCard = {
   id: string
+  recordId: string
   listingId: string
   title: string
   name: string
@@ -410,6 +412,75 @@ export async function getMarketplaceListing(identifier: string): Promise<QueryRe
   return emptyResult(mapMarketplaceDetail(row, sellers.get(row.seller_account_id), categories.get(row.category_id ?? ""), images.get(row.id)))
 }
 
+export async function getBuyNowHorse(slug: string): Promise<QueryResult<MarketplaceDetail | null>> {
+  const setup = getClientOrEmpty<MarketplaceDetail | null>(null)
+  if (setup.result) return setup.result
+
+  const { data, error } = await setup.client
+    .from("horse_listings")
+    .select("*")
+    .eq("slug", slug)
+    .eq("sale_mode", "buy_now")
+    .in("status", ["published", "under_offer", "sold"])
+    .not("published_at", "is", null)
+    .limit(1)
+
+  if (error) return emptyResult(null, error.message)
+  const row = data?.[0]
+  if (!row) return emptyResult(null)
+
+  const [sellers, images] = await Promise.all([
+    sellerMap([row.seller_account_id]),
+    imagesFor("horse_listing_id", [row.id]),
+  ])
+  const seller = sellers.get(row.seller_account_id)
+  const imgs = images.get(row.id)
+  const primary = primaryImage(imgs)
+
+  const specs = arraySpecs(row.specs).length
+    ? arraySpecs(row.specs)
+    : [
+        { label: "Age", value: row.age_years ? `${row.age_years} Years` : "On request" },
+        { label: "Color", value: row.color ?? "On request" },
+        { label: "Sex", value: row.sex },
+        { label: "Gait", value: row.gait },
+        { label: "Sire", value: row.sire ?? "On request" },
+        { label: "Dam", value: row.dam ?? "On request" },
+        { label: "Best Mile", value: row.best_mile ?? "On request" },
+      ]
+
+  return emptyResult({
+    id: row.slug,
+    recordId: row.id,
+    title: row.title,
+    price: money(row.asking_price),
+    image: primary,
+    location: locationFrom(row),
+    condition: "Standardbred",
+    category: "Buy Now Horse",
+    seller: seller?.display_name ?? "Verified seller",
+    verified: seller?.verification_status === "verified",
+    featured: false,
+    shipping: false,
+    createdAt: timeAgo(row.published_at ?? row.created_at),
+    description: row.description ?? row.short_description ?? "",
+    images: imageUrls(imgs, primary),
+    sellerSlug: seller?.slug ?? "",
+    sellerAvatar: seller?.logo_url ?? "/placeholder-user.jpg",
+    sellerMemberSince: seller?.created_at ? new Date(seller.created_at).getFullYear().toString() : "New seller",
+    sellerTotalListings: seller?.total_listings ?? 0,
+    sellerRating: seller?.rating ?? 0,
+    sellerReviews: seller?.review_count ?? 0,
+    sellerResponseTime: seller?.response_time_label ?? "Contact seller",
+    sellerEnterprise: seller?.account_type === "enterprise",
+    shippingDomestic: null,
+    shippingInternational: null,
+    specs,
+    views: row.view_count,
+    watchers: row.watcher_count,
+  })
+}
+
 export async function getHorseAuction(identifier: string): Promise<QueryResult<HorseAuctionDetail | null>> {
   const setup = getClientOrEmpty<HorseAuctionDetail | null>(null)
   if (setup.result) return setup.result
@@ -605,6 +676,7 @@ async function getSellerSaleEvents(seller: SellerRow, enterprise: EnterpriseSell
 function mapMarketplaceCard(row: MarketplaceRow, seller?: SellerRow, category?: CategoryRow, images?: ImageRow[]): MarketplaceCard {
   return {
     id: row.slug,
+    recordId: row.id,
     title: row.title,
     price: money(row.price),
     image: primaryImage(images),
@@ -644,6 +716,7 @@ function mapMarketplaceDetail(row: MarketplaceRow, seller?: SellerRow, category?
 function mapHorseAuctionCard(auction: AuctionRow, horse: HorseRow, seller?: SellerRow, images?: ImageRow[]): HorseAuctionCard {
   return {
     id: auction.id,
+    recordId: horse.id,
     listingId: horse.slug,
     title: horse.title,
     name: titleName(horse.title),

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { WatchButton } from "@/components/listings/watch-button"
 import type { HorseAuctionCard } from "@/lib/supabase/queries"
 
 function formatCurrency(amount: number) {
@@ -97,6 +98,9 @@ export function AuctionBrowse({ auctions }: { auctions: HorseAuctionCard[] }) {
                   <div className="absolute bottom-3 left-3 rounded-md bg-primary/90 px-3 py-2 text-xs text-primary-foreground backdrop-blur-sm">
                     <Clock className="mr-1 inline h-3 w-3 text-accent" />
                     {auction.endTime}
+                  </div>
+                  <div className="absolute bottom-3 right-3 opacity-0 transition-opacity group-hover:opacity-100">
+                    <WatchButton listingId={auction.recordId} kind="horse" variant="icon" />
                   </div>
                 </div>
                 <CardContent className="p-5">

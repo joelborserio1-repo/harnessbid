@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import type { SellerStorefront } from "@/lib/supabase/queries"
+import { EnquiryDialog, type EnquiryTarget } from "@/components/enquiries/enquiry-dialog"
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("en-US", {
@@ -30,6 +31,11 @@ function formatDate(value: string | null) {
 export function SellerStorefrontPage({ storefront }: { storefront: SellerStorefront }) {
   const { seller, enterprise, saleEvents, marketplaceListings, horseAuctions } = storefront
   const hasActivity = saleEvents.length > 0 || marketplaceListings.length > 0 || horseAuctions.length > 0
+
+  const enquiryTargets: EnquiryTarget[] = [
+    ...horseAuctions.map((a) => ({ id: a.recordId, kind: "horse" as const, label: a.name || a.title })),
+    ...marketplaceListings.map((m) => ({ id: m.recordId, kind: "marketplace" as const, label: m.title })),
+  ]
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,6 +88,13 @@ export function SellerStorefrontPage({ storefront }: { storefront: SellerStorefr
                   </div>
                 </CardContent>
               </Card>
+
+              <div className="mt-4">
+                <EnquiryDialog
+                  targets={enquiryTargets}
+                  triggerLabel={enquiryTargets.length ? "Contact seller" : "No listings to enquire about"}
+                />
+              </div>
             </div>
           </div>
         </section>

@@ -4,6 +4,9 @@ import { AuctionListingDetail } from "@/components/listing-detail"
 import { EmptyStatePage } from "@/components/static-pages"
 import { Gavel } from "lucide-react"
 import { getHorseAuction } from "@/lib/supabase/queries"
+import { WatchButton } from "@/components/listings/watch-button"
+import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
+import { isListingWatched } from "@/lib/listings/watchlist"
 
 export default async function AuctionDetailPage({
   params,
@@ -39,11 +42,28 @@ export default async function AuctionDetailPage({
     )
   }
 
+  const watched = await isListingWatched(auction.data.recordId, "horse")
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 pb-20 lg:pb-0">
-        <AuctionListingDetail listing={auction.data} />
+        <AuctionListingDetail
+          listing={auction.data}
+          actionBar={
+            <>
+              <WatchButton
+                listingId={auction.data.recordId}
+                kind="horse"
+                initialWatched={watched}
+                variant="full"
+              />
+              <EnquiryDialog
+                targets={[{ id: auction.data.recordId, kind: "horse", label: auction.data.title }]}
+              />
+            </>
+          }
+        />
       </main>
       <Footer />
     </div>

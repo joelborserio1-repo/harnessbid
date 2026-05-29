@@ -2,6 +2,9 @@ import { EquipmentListingDetail } from "@/components/listing-detail"
 import { EmptyStatePage, PageFrame, categoryPages } from "@/components/static-pages"
 import { Search } from "lucide-react"
 import { getMarketplaceListing } from "@/lib/supabase/queries"
+import { WatchButton } from "@/components/listings/watch-button"
+import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
+import { isListingWatched } from "@/lib/listings/watchlist"
 
 export default async function MarketplaceDetailPage({
   params,
@@ -31,9 +34,27 @@ export default async function MarketplaceDetailPage({
   }
 
   if (listing.data) {
+    const watched = await isListingWatched(listing.data.recordId, "marketplace")
     return (
       <PageFrame>
-        <EquipmentListingDetail listing={listing.data} />
+        <EquipmentListingDetail
+          listing={listing.data}
+          actionBar={
+            <>
+              <WatchButton
+                listingId={listing.data.recordId}
+                kind="marketplace"
+                initialWatched={watched}
+                variant="full"
+              />
+              <EnquiryDialog
+                targets={[
+                  { id: listing.data.recordId, kind: "marketplace", label: listing.data.title },
+                ]}
+              />
+            </>
+          }
+        />
       </PageFrame>
     )
   }
