@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 
-const PROTECTED_PREFIXES = ["/dashboard", "/account"]
+const PROTECTED_PREFIXES = ["/dashboard", "/account", "/onboarding"]
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request })

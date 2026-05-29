@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { createSupabaseServerAuthClient, hasSupabaseEnv } from "@/lib/supabase/auth-server"
+import { isValidSlug, slugCandidates, slugify } from "@/lib/seller/slug"
 
 export type ActionState = {
   error?: string
@@ -14,19 +15,13 @@ const NOT_CONFIGURED: ActionState = {
   error: "Authentication is not configured yet. Please try again later.",
 }
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 function safeRedirectPath(value: FormDataEntryValue | null): string {
   const path = typeof value === "string" ? value : ""
   // Only allow same-origin absolute paths to avoid open-redirects.
   if (path.startsWith("/") && !path.startsWith("//")) return path
   return "/dashboard"
-}
-
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
 }
 
 export async function signInAction(
@@ -119,7 +114,7 @@ export async function signOutAction(): Promise<void> {
   redirect("/")
 }
 
-export async function createSellerAccountAction(
+export async function completeOnboardingAction(
   _prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
@@ -129,59 +124,120 @@ export async function createSellerAccountAction(
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return { error: "You must be signed in to create a seller account." }
+  if (!user) return { error: "You must be signed in to complete onboarding." }
 
-  const displayName = String(formData.get("displayName") ?? "").trim()
-  const accountTypeRaw = String(formData.get("accountType") ?? "individual")
-  const bio = String(formData.get("bio") ?? "").trim()
+  // One seller account per user in this phase. If one already exists, treat
+  // onboarding as complete and route to the dashboard.
+  const { data: existing } = await supabase
+    .from("seller_accounts")
+    .select("id")
+    .eq("owner_profile_id", user.id)
+    .limit(1)
+    .maybeSingle()
+  if (existing) redirect("/dashboard")
+
+  const isEnterprise = String(formData.get("accountType") ?? "individual") === "enterprise"
+
+  const name = String(formData.get("name") ?? "").trim()
+  const requestedSlug = slugify(String(formData.get("slug") ?? ""))
   const location = String(formData.get("location") ?? "").trim()
+  const bio = String(formData.get("bio") ?? "").trim()
   const contactEmail = String(formData.get("contactEmail") ?? "").trim()
+  const contactPhone = String(formData.get("contactPhone") ?? "").trim()
+  const website = String(formData.get("website") ?? "").trim()
+  const abn = String(formData.get("abn") ?? "").trim()
 
-  if (!displayName) {
-    return { error: "Enter a seller or business name." }
+  // --- Validation ----------------------------------------------------------
+  if (!name) {
+    return { error: isEnterprise ? "Enter your company name." : "Enter your seller name." }
+  }
+  if (!location) {
+    return { error: "Enter your location or region." }
+  }
+  if (requestedSlug && !isValidSlug(requestedSlug)) {
+    return {
+      error: "Username must be 3–48 characters, lowercase letters, numbers, and hyphens only.",
+    }
+  }
+  if (contactEmail && !EMAIL_PATTERN.test(contactEmail)) {
+    return { error: "Enter a valid contact email address." }
+  }
+  if (isEnterprise) {
+    if (!contactEmail) return { error: "Enter a business email address." }
+    if (!contactPhone) return { error: "Enter a contact phone number." }
   }
 
-  const accountType =
-    accountTypeRaw === "business" ? "business" : "individual"
+  const accountType = isEnterprise ? "enterprise" : "individual"
+  const candidates = slugCandidates(requestedSlug || name, 4)
 
-  const baseSlug = slugify(displayName) || `seller-${user.id.slice(0, 8)}`
-
-  // The DB enforces slug uniqueness; retry with a suffix on conflict (23505).
+  // The DB enforces slug uniqueness; retry suffixed candidates on conflict.
+  let createdSellerId: string | null = null
   let lastError: string | null = null
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const slug =
-      attempt === 0 ? baseSlug : `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`
 
-    const { error } = await supabase.from("seller_accounts").insert({
-      owner_profile_id: user.id,
-      display_name: displayName,
-      slug,
-      account_type: accountType,
-      bio: bio || null,
-      location_text: location || null,
-      contact_email: contactEmail || user.email || null,
-    })
+  for (const slug of candidates) {
+    const { data, error } = await supabase
+      .from("seller_accounts")
+      .insert({
+        owner_profile_id: user.id,
+        display_name: name,
+        slug,
+        account_type: accountType,
+        bio: bio || null,
+        location_text: location || null,
+        website_url: website || null,
+        contact_email: contactEmail || user.email || null,
+        contact_phone: contactPhone || null,
+        metadata: {
+          onboarding_completed_at: new Date().toISOString(),
+          banner_placeholder: true,
+          avatar_placeholder: true,
+        },
+      })
+      .select("id")
+      .single()
 
-    if (!error) {
-      // Promote the profile role so the dashboard reflects seller status.
-      await supabase
-        .from("profiles")
-        .update({ role: "seller" })
-        .eq("id", user.id)
-        .eq("role", "buyer")
-
-      revalidatePath("/dashboard")
-      revalidatePath("/", "layout")
-      redirect("/dashboard")
+    if (!error && data) {
+      createdSellerId = data.id
+      break
     }
 
-    lastError = error.message
-    if (error.code !== "23505") break
+    lastError = error?.message ?? null
+    if (error?.code !== "23505") break // only retry on slug uniqueness conflicts
   }
 
-  return {
-    error: lastError ?? "Could not create the seller account. Please try again.",
+  if (!createdSellerId) {
+    return {
+      error: lastError ?? "Could not create the seller account. Please try again.",
+    }
   }
+
+  // Enterprise applicants get an enterprise_sellers row in "in_review" status.
+  // Admin approval (moving to "active") is a later phase.
+  if (isEnterprise) {
+    await supabase.from("enterprise_sellers").insert({
+      seller_account_id: createdSellerId,
+      legal_name: name,
+      trading_name: name,
+      onboarding_status: "in_review",
+      external_reference: abn || null,
+      brand_settings: {
+        website: website || null,
+        logo_placeholder: true,
+        banner_placeholder: true,
+      },
+    })
+  }
+
+  // Promote the profile role so the dashboard reflects seller status.
+  await supabase
+    .from("profiles")
+    .update({ role: "seller" })
+    .eq("id", user.id)
+    .eq("role", "buyer")
+
+  revalidatePath("/dashboard")
+  revalidatePath("/", "layout")
+  redirect("/dashboard")
 }
 
 export async function requestEnterpriseAction(

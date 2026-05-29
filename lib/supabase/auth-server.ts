@@ -141,3 +141,87 @@ export async function getOwnedSellerAccount(): Promise<SellerAccountSummary | nu
     enterpriseRequested: Boolean(metadata.enterprise_requested),
   }
 }
+
+export type SellerContext = {
+  id: string
+  displayName: string
+  slug: string
+  bio: string | null
+  location: string | null
+  website: string | null
+  logoUrl: string | null
+  accountType: Database["public"]["Enums"]["seller_account_type"]
+  verificationStatus: Database["public"]["Enums"]["verification_status"]
+  enterpriseRequested: boolean
+  isEnterprise: boolean
+  createdAt: string | null
+  /** Present when the seller has an enterprise_sellers record. */
+  enterprise: {
+    onboardingStatus: Database["public"]["Enums"]["onboarding_status"]
+    tier: Database["public"]["Enums"]["enterprise_tier"]
+    legalName: string | null
+    externalReference: string | null
+  } | null
+}
+
+/**
+ * Rich seller context for the dashboard: the owner's seller account plus, when
+ * applicable, their enterprise application status. All reads run through RLS as
+ * the current user (owner-read policies).
+ */
+export async function getOwnedSellerContext(): Promise<SellerContext | null> {
+  if (!hasSupabaseEnv()) return null
+  const supabase = await createSupabaseServerAuthClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return null
+
+  const { data } = await supabase
+    .from("seller_accounts")
+    .select(
+      "id, display_name, slug, bio, location_text, website_url, logo_url, account_type, verification_status, metadata, created_at",
+    )
+    .eq("owner_profile_id", user.id)
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle()
+
+  if (!data) return null
+
+  const metadata = (data.metadata ?? {}) as Record<string, unknown>
+  const isEnterprise = data.account_type === "enterprise"
+
+  let enterprise: SellerContext["enterprise"] = null
+  if (isEnterprise) {
+    const { data: ent } = await supabase
+      .from("enterprise_sellers")
+      .select("onboarding_status, tier, legal_name, external_reference")
+      .eq("seller_account_id", data.id)
+      .maybeSingle()
+    if (ent) {
+      enterprise = {
+        onboardingStatus: ent.onboarding_status,
+        tier: ent.tier,
+        legalName: ent.legal_name,
+        externalReference: ent.external_reference,
+      }
+    }
+  }
+
+  return {
+    id: data.id,
+    displayName: data.display_name,
+    slug: data.slug,
+    bio: data.bio,
+    location: data.location_text,
+    website: data.website_url,
+    logoUrl: data.logo_url,
+    accountType: data.account_type,
+    verificationStatus: data.verification_status,
+    enterpriseRequested: Boolean(metadata.enterprise_requested),
+    isEnterprise,
+    createdAt: data.created_at,
+    enterprise,
+  }
+}

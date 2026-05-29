@@ -22,7 +22,9 @@ import {
   MoreHorizontal,
   Gavel,
   LayoutDashboard,
-  LogOut
+  LogOut,
+  Package,
+  Store
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -63,7 +65,7 @@ const otherCategories = [
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const homeHref = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/`
-  const { isAuthenticated, email } = useAuthUser()
+  const { isAuthenticated, email, sellerSlug, isEnterprise } = useAuthUser()
   const router = useRouter()
 
   async function handleSignOut() {
@@ -204,9 +206,29 @@ export function Header() {
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="flex cursor-pointer items-center gap-2">
                       <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-                      Seller dashboard
+                      Dashboard
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/listings" className="flex cursor-pointer items-center gap-2">
+                      <Package className="h-4 w-4 text-muted-foreground" />
+                      My Listings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/watchlist" className="flex cursor-pointer items-center gap-2">
+                      <Heart className="h-4 w-4 text-muted-foreground" />
+                      Saved Listings
+                    </Link>
+                  </DropdownMenuItem>
+                  {isEnterprise && sellerSlug && (
+                    <DropdownMenuItem asChild>
+                      <Link href={`/seller/${sellerSlug}`} className="flex cursor-pointer items-center gap-2">
+                        <Store className="h-4 w-4 text-muted-foreground" />
+                        My Storefront
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/account" className="flex cursor-pointer items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
@@ -219,7 +241,7 @@ export function Header() {
                     className="flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive"
                   >
                     <LogOut className="h-4 w-4" />
-                    Sign out
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -304,8 +326,26 @@ export function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <LayoutDashboard className="h-5 w-5" />
-                    Seller dashboard
+                    Dashboard
                   </Link>
+                  <Link
+                    href="/dashboard/listings"
+                    className="flex items-center gap-2 px-4 py-2 text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Package className="h-5 w-5" />
+                    My Listings
+                  </Link>
+                  {isEnterprise && sellerSlug && (
+                    <Link
+                      href={`/seller/${sellerSlug}`}
+                      className="flex items-center gap-2 px-4 py-2 text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Store className="h-5 w-5" />
+                      My Storefront
+                    </Link>
+                  )}
                   <Link
                     href="/account"
                     className="flex items-center gap-2 px-4 py-2 text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
@@ -320,7 +360,7 @@ export function Header() {
                     className="flex items-center gap-2 px-4 py-2 text-left text-primary-foreground/80 hover:bg-primary-foreground/10 rounded-md"
                   >
                     <LogOut className="h-5 w-5" />
-                    Sign out
+                    Logout
                   </button>
                 </>
               ) : (

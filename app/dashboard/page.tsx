@@ -2,12 +2,7 @@ import { redirect } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { SellerDashboard } from "@/components/seller-dashboard"
-import { SellerOnboarding } from "@/components/seller-onboarding"
-import {
-  getCurrentProfile,
-  getOwnedSellerAccount,
-  getSessionUser,
-} from "@/lib/supabase/auth-server"
+import { getOwnedSellerContext, getSessionUser } from "@/lib/supabase/auth-server"
 
 // Auth depends on per-request cookies; never statically prerender.
 export const dynamic = "force-dynamic"
@@ -19,35 +14,38 @@ const ACCOUNT_TYPE_LABELS: Record<string, string> = {
 }
 
 export default async function DashboardPage() {
-  // Defense-in-depth: middleware already guards /dashboard, but re-check here.
+  // Defense-in-depth: proxy already guards /dashboard, but re-check here.
   const user = await getSessionUser()
   if (!user) redirect("/login?redirect=/dashboard")
 
-  const [profile, sellerAccount] = await Promise.all([
-    getCurrentProfile(),
-    getOwnedSellerAccount(),
-  ])
+  // Sellers must complete onboarding before reaching dashboard tools.
+  const seller = await getOwnedSellerContext()
+  if (!seller) redirect("/onboarding")
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        {sellerAccount ? (
-          <SellerDashboard
-            seller={{
-              name: sellerAccount.displayName,
-              accountTypeLabel:
-                ACCOUNT_TYPE_LABELS[sellerAccount.accountType] ?? "Seller",
-              verified: sellerAccount.verificationStatus === "verified",
-              isEnterprise: sellerAccount.accountType === "enterprise",
-              enterpriseRequested: sellerAccount.enterpriseRequested,
-            }}
-          />
-        ) : (
-          <SellerOnboarding
-            defaultName={profile?.displayName ?? profile?.fullName ?? undefined}
-          />
-        )}
+        <SellerDashboard
+          seller={{
+            name: seller.displayName,
+            slug: seller.slug,
+            accountTypeLabel: ACCOUNT_TYPE_LABELS[seller.accountType] ?? "Seller",
+            isEnterprise: seller.isEnterprise,
+            verified: seller.verificationStatus === "verified",
+            verificationStatus: seller.verificationStatus,
+            location: seller.location,
+            bio: seller.bio,
+            website: seller.website,
+            memberSince: seller.createdAt
+              ? new Date(seller.createdAt).getFullYear().toString()
+              : null,
+            enterpriseRequested: seller.enterpriseRequested,
+            enterpriseStatus: seller.enterprise
+              ? seller.enterprise.onboardingStatus.replace(/_/g, " ")
+              : null,
+          }}
+        />
       </main>
       <Footer />
     </div>
