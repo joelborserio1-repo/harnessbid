@@ -85,9 +85,9 @@ function ImageGallery({ images }: { images: string[] }) {
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
-    <div className="space-y-4">
-      {/* Main Image */}
-      <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted">
+    <div className="space-y-3">
+      {/* Main Image — capped height so it doesn't dominate the page */}
+      <div className="relative aspect-[16/10] max-h-[420px] overflow-hidden rounded-sm border border-border bg-muted">
         <Image
           src={images[activeIndex]}
           alt="Listing image"
@@ -95,20 +95,20 @@ function ImageGallery({ images }: { images: string[] }) {
           className="object-cover"
           priority
         />
-        
+
         {/* Navigation Arrows */}
         {images.length > 1 && (
           <>
             <button
               onClick={() => setActiveIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-card/80 hover:bg-card text-foreground transition-colors"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-1.5 rounded-sm bg-card/90 hover:bg-card text-foreground border border-border transition-colors"
               aria-label="Previous image"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               onClick={() => setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-card/80 hover:bg-card text-foreground transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-sm bg-card/90 hover:bg-card text-foreground border border-border transition-colors"
               aria-label="Next image"
             >
               <ChevronRight className="h-5 w-5" />
@@ -117,28 +117,23 @@ function ImageGallery({ images }: { images: string[] }) {
         )}
 
         {/* Image Counter */}
-        <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-card/80 text-sm text-foreground">
+        <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded-sm bg-card/90 border border-border text-xs text-foreground tabular-nums">
           {activeIndex + 1} / {images.length}
         </div>
       </div>
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-2 overflow-x-auto pb-1">
           {images.map((image, index) => (
             <button
               key={index}
               onClick={() => setActiveIndex(index)}
-              className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-colors ${
-                index === activeIndex ? "border-accent" : "border-transparent hover:border-border"
+              className={`relative w-16 h-16 flex-shrink-0 rounded-sm overflow-hidden border transition-colors ${
+                index === activeIndex ? "border-accent" : "border-border hover:border-foreground/30"
               }`}
             >
-              <Image
-                src={image}
-                alt={`Thumbnail ${index + 1}`}
-                fill
-                className="object-cover"
-              />
+              <Image src={image} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
             </button>
           ))}
         </div>
@@ -412,65 +407,39 @@ function ListingInfoCard({ listing }: { listing: ReturnType<typeof toEquipmentLi
 
 function SellerCard({ seller }: { seller: ReturnType<typeof toEquipmentListingView>["seller"] }) {
   return (
-    <Card>
-      <CardContent className="p-6">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="relative w-16 h-16 rounded-full overflow-hidden bg-muted">
-            <Image
-              src={seller.avatar}
-              alt={seller.name}
-              fill
-              className="object-cover"
-            />
+    <Card className="rounded-sm shadow-none">
+      <CardContent className="p-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
+            <Image src={seller.avatar} alt={seller.name} fill className="object-cover" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-foreground">{seller.name}</h3>
-              {seller.verified && <BadgeCheck className="h-5 w-5 text-accent" />}
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h3 className="font-medium text-sm text-foreground truncate">{seller.name}</h3>
+              {seller.verified && <BadgeCheck className="h-4 w-4 text-accent shrink-0" />}
             </div>
-            {seller.enterprise && (
-              <Badge variant="secondary" className="mt-1">Enterprise Seller</Badge>
-            )}
+            <p className="text-xs text-muted-foreground">
+              {seller.enterprise ? "Enterprise seller" : "Verified seller"} · since {seller.memberSince}
+            </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-          <div>
-            <p className="text-muted-foreground">Member Since</p>
-            <p className="font-medium text-foreground">{seller.memberSince}</p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">Total Listings</p>
-            <p className="font-medium text-foreground">{seller.totalListings}</p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">Rating</p>
-            <p className="font-medium text-foreground">{seller.rating} ({seller.reviews} reviews)</p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">Response Time</p>
-            <p className="font-medium text-foreground">{seller.responseTime}</p>
-          </div>
+        <div className="flex items-center gap-4 mb-3 text-xs text-muted-foreground border-y border-border py-2">
+          <span><span className="font-medium text-foreground">{seller.totalListings}</span> listings</span>
+          <span><span className="font-medium text-foreground">{seller.rating}</span> rating</span>
+          <span className="truncate">{seller.responseTime}</span>
         </div>
 
-        <Separator className="my-4" />
-
-        <div className="space-y-2">
-          <Button asChild variant="outline" className="w-full justify-start">
+        <div className="space-y-1.5">
+          <Button asChild variant="outline" size="sm" className="w-full justify-start rounded-sm">
             <a href="#listing-actions">
               <MessageSquare className="mr-2 h-4 w-4" />
               Message seller
             </a>
           </Button>
-          <Button asChild variant="outline" className="w-full justify-start">
-            <a href="#listing-actions">
-              <Phone className="mr-2 h-4 w-4" />
-              Request a call
-            </a>
-          </Button>
-          <Link href={`/sellers/${seller.name.toLowerCase().replace(/\s+/g, '-')}`}>
-            <Button variant="ghost" className="w-full justify-start text-primary">
-              View All Listings
+          <Link href={`/sellers/${seller.name.toLowerCase().replace(/\s+/g, "-")}`}>
+            <Button variant="ghost" size="sm" className="w-full justify-start text-primary rounded-sm">
+              View all listings
               <ChevronRight className="ml-auto h-4 w-4" />
             </Button>
           </Link>
