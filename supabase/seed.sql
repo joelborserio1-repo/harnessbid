@@ -85,7 +85,7 @@ insert into public.horse_listings (id, seller_account_id, sale_event_id, title, 
 select
   gen_random_uuid(),
   sa.id,
-  case when g % 4 = 0 then '10000000-0000-0000-0000-000000000001' else null end,
+  case when g % 4 = 0 then '10000000-0000-0000-0000-000000000001'::uuid else null end,
   (array['Bettor Dream','Classic Pace','Northern Light','Sweet Victory','Major Custom','Art Major Magic'])[1 + (g % 6)] || ' (' || g || ')',
   'seed-horse-' || g,
   (array['published','published','published','sold','draft'])[1 + (g % 5)]::public.listing_status,
