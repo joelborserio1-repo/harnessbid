@@ -84,6 +84,16 @@ export type HorseAuctionCard = {
   verified: boolean
   bids: number
   endTime: string
+  // Catalogue / lot-board fields
+  lot: number | null
+  sire: string | null
+  dam: string | null
+  gait: string | null
+  sex: string | null
+  age: number | null
+  endsAt: string // ISO, for live client-side countdown
+  reserveMet: boolean
+  status: string
 }
 
 export type MarketplaceDetail = MarketplaceCard & {
@@ -894,6 +904,15 @@ function mapHorseAuctionCard(auction: AuctionRow, horse: HorseRow, seller?: Sell
     verified: seller?.verification_status === "verified",
     bids: auction.bid_count,
     endTime: timeLeft(auction.ends_at),
+    lot: horse.lot_number ? Number(horse.lot_number) : null,
+    sire: horse.sire,
+    dam: horse.dam,
+    gait: horse.gait === "unknown" ? null : horse.gait,
+    sex: horse.sex === "unknown" ? null : horse.sex,
+    age: horse.age_years,
+    endsAt: auction.ends_at,
+    reserveMet: auction.reserve_met,
+    status: auction.status,
   }
 }
 
