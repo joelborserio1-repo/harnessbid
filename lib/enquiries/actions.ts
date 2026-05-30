@@ -7,8 +7,6 @@ import {
 } from "@/lib/supabase/auth-server"
 import type { ActionState } from "@/lib/auth/actions"
 
-export type { ActionState }
-
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const NOT_CONFIGURED: ActionState = {
   error: "Enquiries are not available yet. Please try again later.",

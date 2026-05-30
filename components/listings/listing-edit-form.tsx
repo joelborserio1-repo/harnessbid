@@ -10,8 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   deleteListingAction,
   updateListingAction,
-  type ActionState,
 } from "@/lib/listings/actions"
+import type { ActionState } from "@/lib/auth/actions"
 import type { OwnedListingDetail } from "@/lib/listings/queries"
 
 const initialState: ActionState = {}

@@ -6,8 +6,6 @@ import { createSupabaseServerAuthClient, hasSupabaseEnv } from "@/lib/supabase/a
 import { slugCandidates } from "@/lib/seller/slug"
 import type { ActionState } from "@/lib/auth/actions"
 
-export type { ActionState }
-
 const NOT_CONFIGURED: ActionState = {
   error: "Listings are not available yet. Please try again later.",
 }

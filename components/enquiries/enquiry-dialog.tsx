@@ -16,7 +16,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { createEnquiryAction, type ActionState } from "@/lib/enquiries/actions"
+import { createEnquiryAction } from "@/lib/enquiries/actions"
+import type { ActionState } from "@/lib/auth/actions"
 
 export type EnquiryTarget = { id: string; kind: "horse" | "marketplace"; label: string }
 

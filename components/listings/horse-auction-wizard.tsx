@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ImageUploader } from "@/components/listings/image-uploader"
 import { WizardFrame, StepNav, SubmitBar } from "@/components/listings/wizard"
-import { createHorseAuctionAction, type ActionState } from "@/lib/listings/actions"
+import { createHorseAuctionAction } from "@/lib/listings/actions"
+import type { ActionState } from "@/lib/auth/actions"
 import type { HorseAuctionDetail } from "@/lib/supabase/queries"
 import {
   HORSE_GAITS,
