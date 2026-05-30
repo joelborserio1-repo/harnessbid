@@ -13,13 +13,19 @@
 -- ===========================================================================
 -- Named auth users (login-able) + identities
 -- ===========================================================================
+-- NOTE: the token columns (confirmation_token, recovery_token, etc.) are set to
+-- '' rather than left NULL. GoTrue scans these into Go strings and errors with
+-- "converting NULL to string is unsupported" (HTTP 500 on login) if they are
+-- NULL, so every seeded login would otherwise fail.
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password,
-  email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+  email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, recovery_token, email_change_token_new, email_change,
+  email_change_token_current, phone_change, phone_change_token, reauthentication_token)
 values
-  ('a0000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000000','authenticated','authenticated','admin@harnessbid.test', crypt('password123', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"HarnessBid Admin"}', now(), now()),
-  ('a0000000-0000-0000-0000-000000000002','00000000-0000-0000-0000-000000000000','authenticated','authenticated','seller@harnessbid.test', crypt('password123', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Riverside Stables"}', now(), now()),
-  ('a0000000-0000-0000-0000-000000000003','00000000-0000-0000-0000-000000000000','authenticated','authenticated','enterprise@harnessbid.test', crypt('password123', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"APG Sales"}', now(), now()),
-  ('a0000000-0000-0000-0000-000000000004','00000000-0000-0000-0000-000000000000','authenticated','authenticated','buyer@harnessbid.test', crypt('password123', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Jordan Buyer"}', now(), now())
+  ('a0000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000000','authenticated','authenticated','admin@harnessbid.test', crypt('password123', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"HarnessBid Admin"}', now(), now(), '', '', '', '', '', '', '', ''),
+  ('a0000000-0000-0000-0000-000000000002','00000000-0000-0000-0000-000000000000','authenticated','authenticated','seller@harnessbid.test', crypt('password123', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Riverside Stables"}', now(), now(), '', '', '', '', '', '', '', ''),
+  ('a0000000-0000-0000-0000-000000000003','00000000-0000-0000-0000-000000000000','authenticated','authenticated','enterprise@harnessbid.test', crypt('password123', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"APG Sales"}', now(), now(), '', '', '', '', '', '', '', ''),
+  ('a0000000-0000-0000-0000-000000000004','00000000-0000-0000-0000-000000000000','authenticated','authenticated','buyer@harnessbid.test', crypt('password123', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Jordan Buyer"}', now(), now(), '', '', '', '', '', '', '', '')
 on conflict (id) do nothing;
 
 insert into auth.identities (id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at)
@@ -30,12 +36,14 @@ on conflict do nothing;
 
 -- Bulk seller users (owners only; not used for login).
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password,
-  email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+  email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, recovery_token, email_change_token_new, email_change,
+  email_change_token_current, phone_change, phone_change_token, reauthentication_token)
 select gen_random_uuid(), '00000000-0000-0000-0000-000000000000','authenticated','authenticated',
   'bulkseller'||g||'@harnessbid.test', crypt('password123', gen_salt('bf')), now(),
   '{"provider":"email","providers":["email"]}',
   json_build_object('full_name',(array['Hunter Valley Bloodstock','Southern Cross Stud','Lincoln Farms','Yirribee Pacing','Woodlands Stud','Alabar Australia','Emu Park Stud','Tara Lodge'])[g])::jsonb,
-  now(), now()
+  now(), now(), '', '', '', '', '', '', '', ''
 from generate_series(1,8) g
 on conflict do nothing;
 
