@@ -88,66 +88,102 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
         <div className="absolute inset-0 bg-primary/85" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        {/* Live-sale signal */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-            </span>
-            {liveCount > 0 ? `Live now · ${liveCount} lot${liveCount === 1 ? "" : "s"} open for bidding` : "Sale ring opening soon"}
-          </span>
-          {countdown && countdown !== "closing" && (
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-3 py-1 text-xs text-primary-foreground/80">
-              <Clock className="h-3.5 w-3.5 text-accent" />
-              Next lot closes in{" "}
-              <span className="font-mono tabular-nums text-primary-foreground">{countdown}</span>
-            </span>
-          )}
-        </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center">
+          {/* Left: positioning + conversions */}
+          <div>
+            {/* Live-sale signal */}
+            <div className="mb-4 flex flex-wrap items-center gap-2.5">
+              <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-[11px] font-medium text-accent">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+                </span>
+                {liveCount > 0 ? `Live now · ${liveCount} lot${liveCount === 1 ? "" : "s"} open` : "Sale ring opening soon"}
+              </span>
+              {countdown && countdown !== "closing" && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary-foreground/20 px-2.5 py-1 text-[11px] text-primary-foreground/80">
+                  <Clock className="h-3 w-3 text-accent" />
+                  Closes in <span className="font-mono tabular-nums text-primary-foreground">{countdown}</span>
+                </span>
+              )}
+            </div>
 
-        <div className="max-w-3xl">
-          <p className="font-sans text-xs sm:text-[13px] uppercase tracking-[0.2em] text-accent mb-5">
-            Online auctions for standardbred bloodstock
-          </p>
-          <h1 className="font-cinzel text-4xl sm:text-6xl lg:text-7xl font-semibold leading-[1.05] tracking-tight text-balance">
-            Where champions
-            <br className="hidden sm:block" /> <span className="text-accent">change hands</span>
-          </h1>
-          <p className="mt-6 text-base sm:text-lg lg:text-xl text-primary-foreground/75 max-w-2xl leading-relaxed">
-            Live online auctions for standardbred racehorses, broodmares, yearlings and
-            shares — every lot with a verified pedigree, and the sale ring at your fingertips.
-          </p>
+            <p className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.2em] text-accent mb-3">
+              Online auctions for standardbred bloodstock
+            </p>
+            <h1 className="font-cinzel text-3xl sm:text-5xl lg:text-6xl font-semibold leading-[1.06] tracking-tight text-balance">
+              Where champions <span className="text-accent">change hands</span>
+            </h1>
+            <p className="mt-4 text-sm sm:text-base text-primary-foreground/75 max-w-xl leading-relaxed">
+              Live online auctions for standardbred racehorses, broodmares, yearlings and
+              shares — every lot with a verified pedigree, and the sale ring at your fingertips.
+            </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/register">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm">
-                <Gavel className="mr-2 h-4 w-4" />
-                Register to bid
-              </Button>
-            </Link>
-            <Link href="/sell/horse">
-              <Button
-                size="lg"
-                variant="ghost"
-                className="text-primary-foreground hover:bg-primary-foreground/10"
-              >
-                Sell a horse
-              </Button>
-            </Link>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/register">
+                <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm">
+                  <Gavel className="mr-2 h-4 w-4" />
+                  Register to bid
+                </Button>
+              </Link>
+              <Link href="/sell/horse">
+                <Button size="lg" variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10">
+                  Sell a horse
+                </Button>
+              </Link>
+            </div>
+
+            {/* Search */}
+            <form action="/search" className="mt-5 max-w-md relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                name="q"
+                type="search"
+                placeholder="Search horses, equipment, services…"
+                className="h-11 bg-card text-foreground placeholder:text-muted-foreground pl-10 rounded-sm border-0 shadow-sm"
+              />
+            </form>
           </div>
 
-          {/* Search */}
-          <form action="/search" className="mt-6 max-w-xl relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              name="q"
-              type="search"
-              placeholder="Search horses, equipment, services…"
-              className="h-12 bg-card text-foreground placeholder:text-muted-foreground pl-10 rounded-sm border-0 shadow-sm"
-            />
-          </form>
+          {/* Right: featured live lots */}
+          <div className="lg:pl-8 lg:border-l lg:border-primary-foreground/15">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-sans text-[11px] uppercase tracking-[0.16em] text-accent">Featured lots</span>
+              <Link href="/auctions" className="text-[11px] text-primary-foreground/70 hover:text-accent flex items-center gap-1">
+                All auctions <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
+
+            {auctions.length === 0 ? (
+              <div className="rounded-sm border border-primary-foreground/15 p-5 text-sm text-primary-foreground/70">
+                No lots are open right now. Browse upcoming sale events and catalogues.
+              </div>
+            ) : (
+              <ul className="space-y-2">
+                {auctions.slice(0, 3).map((a) => (
+                  <li key={a.id}>
+                    <Link
+                      href={`/auctions/${a.id}`}
+                      className="flex items-center gap-3 rounded-sm border border-primary-foreground/15 bg-primary-foreground/[0.06] p-2.5 hover:border-accent transition-colors"
+                    >
+                      <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-sm bg-primary-foreground/10">
+                        <Image src={a.image} alt={a.name} fill className="object-cover" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-medium text-sm text-primary-foreground">{a.name}</p>
+                        <p className="text-[11px] text-primary-foreground/60">{a.endTime} · {a.bids} bids</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-[9px] uppercase tracking-wider text-primary-foreground/55">Current</p>
+                        <p className="font-mono font-semibold text-sm text-accent tabular-nums">{formatCurrency(a.currentBid)}</p>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
 
