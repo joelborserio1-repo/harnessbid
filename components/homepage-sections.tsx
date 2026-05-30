@@ -46,7 +46,7 @@ function formatCurrency(amount: number) {
  * ------------------------------------------------------------------------- */
 export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }) {
   return (
-    <section className="bg-primary text-primary-foreground">
+    <section className="bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
           {/* Left: positioning + conversions */}
@@ -54,10 +54,10 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
             <p className="font-sans text-xs uppercase tracking-[0.18em] text-accent mb-4">
               The global harness racing marketplace
             </p>
-            <h1 className="font-cinzel text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance">
+            <h1 className="font-cinzel text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance text-foreground">
               Where champions <span className="text-accent">change hands</span>
             </h1>
-            <p className="mt-5 text-base sm:text-lg text-primary-foreground/80 max-w-xl leading-relaxed">
+            <p className="mt-5 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
               Live auctions for standardbred bloodstock, plus a trusted marketplace for
               racing equipment, vehicles, and services — for trainers, breeders, and
               bloodstock professionals worldwide.
@@ -74,7 +74,7 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
+                  className="border-border text-foreground hover:bg-secondary"
                 >
                   Sell a horse
                 </Button>
@@ -88,27 +88,27 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
                 name="q"
                 type="search"
                 placeholder="Search horses, equipment, services..."
-                className="bg-card text-foreground placeholder:text-muted-foreground pl-9 rounded-sm"
+                className="bg-card text-foreground placeholder:text-muted-foreground pl-9 rounded-sm border-border"
               />
             </form>
           </div>
 
           {/* Right: live auctions strip (real lots, above the fold) */}
-          <div className="lg:pl-6 lg:border-l lg:border-primary-foreground/15">
+          <div className="lg:pl-6 lg:border-l lg:border-border">
             <div className="flex items-center justify-between mb-3">
               <span className="font-sans text-xs uppercase tracking-[0.16em] text-accent">
                 Live now
               </span>
               <Link
                 href="/auctions"
-                className="text-xs text-primary-foreground/75 hover:text-accent flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-accent flex items-center gap-1"
               >
                 All auctions <ChevronRight className="h-3 w-3" />
               </Link>
             </div>
 
             {auctions.length === 0 ? (
-              <div className="rounded-sm border border-primary-foreground/15 p-6 text-sm text-primary-foreground/70">
+              <div className="rounded-sm border border-border bg-card p-6 text-sm text-muted-foreground">
                 No auctions are live right now. Browse upcoming sale events and catalogues.
               </div>
             ) : (
@@ -117,18 +117,18 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
                   <li key={a.id}>
                     <Link
                       href={`/auctions/${a.id}`}
-                      className="flex items-center gap-3 rounded-sm border border-primary-foreground/15 bg-primary-foreground/5 p-3 hover:border-accent transition-colors"
+                      className="flex items-center gap-3 rounded-sm border border-border bg-card p-3 shadow-sm hover:border-accent transition-colors"
                     >
-                      <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-sm bg-primary-foreground/10">
+                      <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-sm bg-muted">
                         <Image src={a.image} alt={a.name} fill className="object-cover" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium text-sm text-primary-foreground">{a.name}</p>
-                        <p className="text-xs text-primary-foreground/65">{a.endTime} · {a.bids} bids</p>
+                        <p className="truncate font-medium text-sm text-foreground">{a.name}</p>
+                        <p className="text-xs text-muted-foreground">{a.endTime} · {a.bids} bids</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-[10px] uppercase tracking-wider text-primary-foreground/60">Current</p>
-                        <p className="font-semibold text-sm text-accent">{formatCurrency(a.currentBid)}</p>
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Current</p>
+                        <p className="font-mono font-semibold text-sm text-foreground tabular-nums">{formatCurrency(a.currentBid)}</p>
                       </div>
                     </Link>
                   </li>
@@ -140,9 +140,9 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
       </div>
 
       {/* Consignor / trust bar — credibility above the fold, hairline divider */}
-      <div className="border-t border-primary-foreground/15">
+      <div className="border-t border-border bg-secondary">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center gap-x-6 gap-y-2 justify-center lg:justify-between">
-          <span className="text-xs uppercase tracking-[0.14em] text-primary-foreground/55">
+          <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
             Trusted consignors
           </span>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
@@ -150,13 +150,13 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
               <Link
                 key={c.name}
                 href={c.href}
-                className="text-sm font-medium text-primary-foreground/75 hover:text-accent transition-colors"
+                className="text-sm font-medium text-foreground/75 hover:text-accent transition-colors"
               >
                 {c.name}
               </Link>
             ))}
           </div>
-          <span className="text-xs text-primary-foreground/55 flex items-center gap-2">
+          <span className="text-xs text-muted-foreground flex items-center gap-2">
             <BadgeCheck className="h-3.5 w-3.5 text-accent" /> Verified sellers · Secure payments · HarnessLink network
           </span>
         </div>
