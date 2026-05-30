@@ -24,10 +24,10 @@ import type { HorseAuctionCard, MarketplaceCard, MarketplaceCategory } from "@/l
 const assetPath = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH || ""}${path}`
 
 const consignors = [
-  { name: "APG", href: "/sellers/apg" },
-  { name: "Nutrien Bloodstock", href: "/sellers/nutrien" },
-  { name: "Tattersalls", href: "/sellers/tattersalls" },
-  { name: "Lexington Selected", href: "/sellers/lexington-selected" },
+  { name: "APG", full: "Australian Pacing Gold", kind: "Yearling sales", href: "/sellers/apg" },
+  { name: "Nutrien", full: "Nutrien Bloodstock", kind: "Bloodstock agents", href: "/sellers/nutrien" },
+  { name: "Tattersalls", full: "Tattersalls", kind: "Sales house", href: "/sellers/tattersalls" },
+  { name: "Lexington", full: "Lexington Selected", kind: "Premier sale", href: "/sellers/lexington-selected" },
 ]
 
 function formatCurrency(amount: number) {
@@ -198,7 +198,7 @@ export function FeaturedHorseAuctions({ auctions }: { auctions: HorseAuctionCard
           )}
           {auctions.map((auction) => (
             <Link key={auction.id} href={`/auctions/${auction.id}`}>
-              <Card className="group overflow-hidden border-border bg-card card-hover cursor-pointer rounded-sm shadow-none">
+              <Card className="group overflow-hidden border-border bg-card card-hover cursor-pointer rounded-sm shadow-sm">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image src={auction.image} alt={auction.name} fill className="object-cover" />
                   <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground font-medium rounded-sm">
@@ -301,7 +301,7 @@ export function LatestMarketplaceListings({ listings }: { listings: MarketplaceC
           )}
           {listings.map((listing) => (
             <Link key={listing.id} href={`/marketplace/${listing.id}`}>
-              <Card className="group overflow-hidden border-border bg-card card-hover cursor-pointer rounded-sm shadow-none">
+              <Card className="group overflow-hidden border-border bg-card card-hover cursor-pointer rounded-sm shadow-sm">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image src={listing.image} alt={listing.title} fill className="object-cover" />
                   <Badge className="absolute top-3 left-3 bg-card text-foreground text-xs rounded-sm border border-border">
@@ -339,18 +339,26 @@ export function EnterpriseSellers() {
             Professional sales companies and bloodstock agents worldwide.
           </p>
         </div>
+        {/* Greyscale wordmark lockups — muted by default, full on hover.
+            Swap each for a real <Image> logo when assets are supplied. */}
         <div className="grid grid-cols-2 md:grid-cols-4 border border-primary-foreground/15 rounded-sm overflow-hidden mb-8">
           {consignors.map((seller, i) => (
             <Link
               key={seller.name}
               href={seller.href}
-              className={`flex items-center justify-center p-6 lg:p-8 hover:bg-primary-foreground/5 transition-colors ${
+              aria-label={seller.full}
+              className={`group flex flex-col items-center justify-center gap-1 p-6 lg:p-10 opacity-60 hover:opacity-100 hover:bg-primary-foreground/5 transition-all ${
                 i % 2 === 0 ? "border-r border-primary-foreground/15" : ""
               } ${i < 2 ? "border-b border-primary-foreground/15 md:border-b-0" : ""} ${
                 i === 2 ? "md:border-r border-primary-foreground/15" : ""
               }`}
             >
-              <span className="text-base font-medium text-primary-foreground/80">{seller.name}</span>
+              <span className="font-cinzel text-xl lg:text-2xl tracking-wide text-primary-foreground">
+                {seller.name}
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.16em] text-primary-foreground/55">
+                {seller.kind}
+              </span>
             </Link>
           ))}
         </div>

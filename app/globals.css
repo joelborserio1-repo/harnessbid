@@ -108,7 +108,7 @@
 @theme inline {
   --font-sans: 'Sora', system-ui, sans-serif;
   --font-sora: 'Sora', system-ui, sans-serif;
-  --font-cinzel: 'Cinzel', Georgia, serif;
+  --font-cinzel: 'Fraunces', Georgia, serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -1,20 +1,22 @@
 import type { Metadata, Viewport } from 'next'
-import { Cinzel, Sora } from 'next/font/google'
+import { Fraunces, Sora } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const sora = Sora({ 
+const sora = Sora({
   subsets: ["latin"],
   variable: '--font-sora',
   display: 'swap',
   weight: ['400', '500', '600', '700'],
 })
 
-const cinzel = Cinzel({
+// Display serif for headings — refined editorial gravitas (replaces Cinzel).
+// Reuses the --font-cinzel variable so existing font-cinzel utilities map here.
+const fraunces = Fraunces({
   subsets: ["latin"],
   variable: '--font-cinzel',
   display: 'swap',
-  weight: ['700'],
+  weight: ['400', '500', '600'],
 })
 
 export const metadata: Metadata = {
@@ -41,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${sora.variable} ${cinzel.variable} bg-background`}>
+    <html lang="en" className={`${sora.variable} ${fraunces.variable} bg-background`} suppressHydrationWarning>
       <body className="font-sans antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
