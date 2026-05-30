@@ -277,7 +277,7 @@ export function LatestMarketplaceListings({
   categories?: MarketplaceCategory[]
 }) {
   return (
-    <section className="py-12 lg:py-16 bg-background">
+    <section className="py-12 lg:py-16 bg-card border-t border-border">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-4 pb-4 border-b border-border">
           <div>
@@ -427,46 +427,49 @@ export function TrustStrip() {
 /* ------------------------------------------------------------------------- */
 export function SellerCTA() {
   return (
-    <section className="py-12 lg:py-16 bg-background">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-sm border border-border bg-card p-8 lg:p-12 grid lg:grid-cols-2 gap-8 items-center">
-          <div>
-            <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground mb-3">
-              Ready to sell?
-            </h2>
-            <p className="text-muted-foreground mb-6 leading-relaxed max-w-lg">
-              List horses, equipment, or services to trainers, breeders, and bloodstock
-              professionals worldwide. Register as a seller to get started.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/sell/horse">
-                <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-                  <Gavel className="mr-2 h-4 w-4" />
-                  Sell a horse
-                </Button>
-              </Link>
-              <Link href="/sell/equipment">
-                <Button size="lg" variant="outline" className="border-border text-foreground hover:bg-secondary">
-                  <ShoppingBag className="mr-2 h-4 w-4" />
-                  List equipment
-                </Button>
-              </Link>
-            </div>
+    <section className="py-14 lg:py-20 bg-primary text-primary-foreground border-t border-border">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <p className="font-sans text-xs uppercase tracking-[0.18em] text-accent mb-3">For sellers</p>
+          <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-semibold mb-4">
+            Ready to sell?
+          </h2>
+          <p className="text-primary-foreground/80 mb-7 leading-relaxed max-w-lg">
+            List horses, equipment, or services to trainers, breeders, and bloodstock
+            professionals worldwide. Register as a seller to get started.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/sell/horse">
+              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+                <Gavel className="mr-2 h-4 w-4" />
+                Sell a horse
+              </Button>
+            </Link>
+            <Link href="/sell/equipment">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
+              >
+                <ShoppingBag className="mr-2 h-4 w-4" />
+                List equipment
+              </Button>
+            </Link>
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-px bg-border rounded-sm overflow-hidden border border-border">
-            {[
-              ["Standardbred focus", "Pacers, trotters, yearlings, broodmares"],
-              ["Live + timed auctions", "Proxy bidding and soft-close"],
-              ["Enterprise consignors", "APG, Nutrien, Tattersalls and more"],
-              ["Global reach", "Buyers across AU, NZ and worldwide"],
-            ].map(([t, d]) => (
-              <div key={t} className="bg-card p-5">
-                <p className="font-medium text-foreground text-sm">{t}</p>
-                <p className="text-xs text-muted-foreground mt-1">{d}</p>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-2 gap-px bg-primary-foreground/15 rounded-sm overflow-hidden border border-primary-foreground/15">
+          {[
+            ["Standardbred focus", "Pacers, trotters, yearlings, broodmares"],
+            ["Live + timed auctions", "Proxy bidding and soft-close"],
+            ["Enterprise consignors", "APG, Nutrien, Tattersalls and more"],
+            ["Global reach", "Buyers across AU, NZ and worldwide"],
+          ].map(([t, d]) => (
+            <div key={t} className="bg-primary p-5">
+              <p className="font-medium text-primary-foreground text-sm">{t}</p>
+              <p className="text-xs text-primary-foreground/65 mt-1">{d}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
