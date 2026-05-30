@@ -3,8 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* HarnessBid Theme — warm navy + amber gold + cream
-   Navy #14294A · Gold #E0A33C · Cream #F1ECE3 */
+/* HarnessBid Theme — brand navy + amber gold + cream
+   Navy #00205F · Gold #E0A33C · Cream #F1ECE3 */
 :root {
   /* Warm cream paper */
   --background: #F1ECE3;
@@ -18,13 +18,13 @@
   --popover: #FFFFFF;
   --popover-foreground: #1B2B47;
 
-  /* Primary — warm Navy #14294A */
-  --primary: #14294A;
+  /* Primary — brand Navy #00205F */
+  --primary: #00205F;
   --primary-foreground: #FFFFFF;
 
   /* Secondary — cream tint */
   --secondary: #EAE3D7;
-  --secondary-foreground: #14294A;
+  --secondary-foreground: #00205F;
 
   /* Muted */
   --muted: #EAE3D7;
@@ -32,7 +32,7 @@
 
   /* Accent — amber Gold #E0A33C */
   --accent: #E0A33C;
-  --accent-foreground: #14294A;
+  --accent-foreground: #00205F;
 
   /* Destructive */
   --destructive: oklch(0.577 0.245 27.325);
@@ -41,10 +41,10 @@
   /* Borders — warm hairline */
   --border: #DFD8CB;
   --input: #E6E0D4;
-  --ring: #14294A;
+  --ring: #00205F;
 
   /* Charts */
-  --chart-1: #14294A;
+  --chart-1: #00205F;
   --chart-2: #E0A33C;
   --chart-3: #5B6478;
   --chart-4: #3C5378;
@@ -53,19 +53,19 @@
   --radius: 0.5rem;
 
   /* Sidebar */
-  --sidebar: #14294A;
+  --sidebar: #00205F;
   --sidebar-foreground: #FFFFFF;
   --sidebar-primary: #E0A33C;
-  --sidebar-primary-foreground: #14294A;
-  --sidebar-accent: #14294A;
+  --sidebar-primary-foreground: #00205F;
+  --sidebar-accent: #00205F;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #14294A;
+  --sidebar-border: #00205F;
   --sidebar-ring: #E0A33C;
 
   /* Custom HarnessBid tokens */
-  --navy: #14294A;
-  --navy-deep: #0E1E38;
-  --navy-darker: #0A1730;
+  --navy: #00205F;
+  --navy-deep: #00205F;
+  --navy-darker: #00205F;
   --gold: #E0A33C;
   --gold-light: #EBC176;
   --gold-dark: #C2862A;
