@@ -32,3 +32,14 @@ create schema public;
 grant usage on schema public to anon, authenticated, service_role;
 grant all on schema public to postgres, service_role;
 comment on schema public is 'standard public schema';
+
+-- Dropping the public schema also destroyed the ALTER DEFAULT PRIVILEGES that
+-- Supabase normally configures so anon/authenticated/service_role automatically
+-- receive privileges on new objects. Without these, tables created afterward
+-- are RLS-protected AND grant-less, so every request fails with
+-- "permission denied for table ..." even when an RLS policy would allow it.
+-- Restore Supabase's standard default privileges so full_setup.sql's tables are
+-- reachable (row access is still gated by RLS).
+alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
+alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
+alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
