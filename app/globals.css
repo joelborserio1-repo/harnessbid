@@ -206,14 +206,13 @@
   background: linear-gradient(180deg, var(--navy-darker), var(--navy-deep), var(--navy));
 }
 
-/* Premium card hover effect */
+/* Calm card hover — hairline emphasis, no lift/heavy shadow (auction-house feel) */
 .card-hover {
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 32, 95, 0.15);
+  border-color: var(--accent);
 }
 
 /* Countdown timer animation */

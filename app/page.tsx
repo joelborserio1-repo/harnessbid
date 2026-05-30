@@ -21,18 +21,20 @@ export const dynamic = "force-dynamic"
 
 export default async function HomePage() {
   const [horseAuctions, marketplaceCategories, marketplaceListings, featuredSales] = await Promise.all([
-    getHorseAuctions(3),
+    getHorseAuctions(6),
     getMarketplaceCategories(),
     getMarketplaceListings(4),
     getFeaturedSaleEvents(3),
   ])
 
+  const auctions = horseAuctions.data ?? []
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <HeroSection />
-        <FeaturedHorseAuctions auctions={horseAuctions.data ?? []} />
+        <HeroSection auctions={auctions.slice(0, 3)} />
+        <FeaturedHorseAuctions auctions={auctions.slice(0, 3)} />
         <FeaturedSales events={featuredSales} />
         <MarketplaceCategoryStrip categories={marketplaceCategories.data ?? []} />
         <LatestMarketplaceListings listings={marketplaceListings.data ?? []} />
