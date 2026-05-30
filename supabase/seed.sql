@@ -74,7 +74,7 @@ on conflict (id) do nothing;
 -- ===========================================================================
 insert into public.sale_events (id, enterprise_seller_id, seller_account_id, name, slug, event_type, status, description, timezone, starts_at, ends_at, featured, sort_order)
 values
-  ('10000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000001','b0000000-0000-0000-0000-000000000002','APG Yearling Sale 2026','apg-yearling-sale-2026','online_auction','live','Premier Australian Pacing Gold yearling catalogue.','Australia/Melbourne', now() - interval '1 day', now() + interval '6 days', true, 1),
+  ('10000000-0000-0000-0000-000000000001','c0000000-0000-0000-0000-000000000001',null,'APG Yearling Sale 2026','apg-yearling-sale-2026','online_auction','live','Premier Australian Pacing Gold yearling catalogue.','Australia/Melbourne', now() - interval '1 day', now() + interval '6 days', true, 1),
   ('10000000-0000-0000-0000-000000000002', null,'b0000000-0000-0000-0000-000000000001','Nutrien Harness Mixed Sale','nutrien-harness-mixed-sale','timed_auction','scheduled','Mixed-age dispersal and racing stock sale.','Australia/Sydney', now() + interval '10 days', now() + interval '17 days', true, 2)
 on conflict (id) do nothing;
 
