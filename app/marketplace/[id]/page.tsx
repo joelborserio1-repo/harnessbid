@@ -1,9 +1,16 @@
 import { cache } from "react"
 import type { Metadata } from "next"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { MarketplaceBrowse } from "@/components/marketplace-browse"
 import { EquipmentListingDetail } from "@/components/listing-detail"
 import { EmptyStatePage, PageFrame, categoryPages } from "@/components/static-pages"
 import { Search } from "lucide-react"
-import { getMarketplaceListing } from "@/lib/supabase/queries"
+import {
+  getMarketplaceListing,
+  getMarketplaceListings,
+  getMarketplaceCategories,
+} from "@/lib/supabase/queries"
 import { WatchButton } from "@/components/listings/watch-button"
 import { EnquiryDialog } from "@/components/enquiries/enquiry-dialog"
 import { isListingWatched } from "@/lib/listings/watchlist"
@@ -42,7 +49,27 @@ export default async function MarketplaceDetailPage({
   const { id } = await params
   const categoryPage = categoryPages[id]
 
+  // `id` matches a known marketplace category slug -> show the real, filtered
+  // listing grid for that category (falling back to the curated empty-state
+  // copy only when the category genuinely has no published listings yet).
   if (categoryPage) {
+    const [listings, categories] = await Promise.all([
+      getMarketplaceListings(48, { categorySlug: id }),
+      getMarketplaceCategories(),
+    ])
+
+    if (!listings.error && (listings.data?.length ?? 0) > 0) {
+      return (
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <main className="flex-1">
+            <MarketplaceBrowse listings={listings.data} categories={categories.data} />
+          </main>
+          <Footer />
+        </div>
+      )
+    }
+
     return <EmptyStatePage {...categoryPage} />
   }
 

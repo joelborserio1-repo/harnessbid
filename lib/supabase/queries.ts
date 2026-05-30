@@ -330,17 +330,37 @@ export async function getMarketplaceCategoryOptions(): Promise<QueryResult<Categ
   return emptyResult((data ?? []).map((c) => ({ id: c.id, name: c.name, slug: c.slug })))
 }
 
-export async function getMarketplaceListings(limit = 12): Promise<QueryResult<MarketplaceCard[]>> {
+export async function getMarketplaceListings(
+  limit = 12,
+  options?: { categorySlug?: string },
+): Promise<QueryResult<MarketplaceCard[]>> {
   const setup = getClientOrEmpty<MarketplaceCard[]>([])
   if (setup.result) return setup.result
 
-  const { data, error } = await setup.client
+  // Optionally resolve a category slug to its id so we can filter by it.
+  let categoryId: string | null = null
+  if (options?.categorySlug) {
+    const { data: cat } = await setup.client
+      .from("categories")
+      .select("id")
+      .eq("slug", options.categorySlug)
+      .limit(1)
+    categoryId = cat?.[0]?.id ?? null
+    // Slug provided but no matching category -> no results (avoids returning all).
+    if (!categoryId) return emptyResult([])
+  }
+
+  let query = setup.client
     .from("marketplace_listings")
     .select("*")
     .in("status", ["published", "under_offer", "sold"])
     .not("published_at", "is", null)
     .order("published_at", { ascending: false })
     .limit(limit)
+
+  if (categoryId) query = query.eq("category_id", categoryId)
+
+  const { data, error } = await query
 
   if (error) return emptyResult([], error.message)
 
@@ -410,6 +430,152 @@ export async function getMarketplaceListing(identifier: string): Promise<QueryRe
   ])
 
   return emptyResult(mapMarketplaceDetail(row, sellers.get(row.seller_account_id), categories.get(row.category_id ?? ""), images.get(row.id)))
+}
+
+export type SearchResults = {
+  horses: MarketplaceCard[]
+  marketplace: MarketplaceCard[]
+}
+
+// Keyword search across published horse listings and marketplace listings.
+// Matches title/description (case-insensitive). Horses link to their buy-now or
+// auction detail; marketplace items to /marketplace/<slug>.
+export async function searchListings(term: string): Promise<QueryResult<SearchResults>> {
+  const empty: SearchResults = { horses: [], marketplace: [] }
+  const setup = getClientOrEmpty<SearchResults>(empty)
+  if (setup.result) return setup.result
+
+  const q = term.trim()
+  if (!q) return emptyResult(empty)
+  const like = `%${q.replace(/[%_]/g, "")}%`
+
+  const [horseRes, mktRes] = await Promise.all([
+    setup.client
+      .from("horse_listings")
+      .select("*")
+      .in("status", ["published", "under_offer"])
+      .not("published_at", "is", null)
+      .or(`title.ilike.${like},description.ilike.${like},short_description.ilike.${like}`)
+      .limit(24),
+    setup.client
+      .from("marketplace_listings")
+      .select("*")
+      .in("status", ["published", "under_offer"])
+      .not("published_at", "is", null)
+      .or(`title.ilike.${like},description.ilike.${like}`)
+      .limit(24),
+  ])
+
+  const horseRows = horseRes.data ?? []
+  const mktRows = mktRes.data ?? []
+
+  const [hSellers, hImages, mSellers, mCats, mImages] = await Promise.all([
+    sellerMap(horseRows.map((r) => r.seller_account_id)),
+    imagesFor("horse_listing_id", horseRows.map((r) => r.id)),
+    sellerMap(mktRows.map((r) => r.seller_account_id)),
+    categoryMap(mktRows.map((r) => r.category_id ?? "")),
+    imagesFor("marketplace_listing_id", mktRows.map((r) => r.id)),
+  ])
+
+  return emptyResult({
+    horses: horseRows.map((row) => ({
+      id: row.slug,
+      recordId: row.id,
+      title: row.title,
+      price: money(row.asking_price),
+      image: primaryImage(hImages.get(row.id)),
+      location: locationFrom(row),
+      condition: row.sale_mode === "auction" ? "Auction" : "Buy now",
+      category: "Horse",
+      seller: hSellers.get(row.seller_account_id)?.display_name ?? "Verified seller",
+      verified: hSellers.get(row.seller_account_id)?.verification_status === "verified",
+      featured: false,
+      shipping: false,
+      createdAt: timeAgo(row.published_at ?? row.created_at),
+    })),
+    marketplace: mktRows.map((row) =>
+      mapMarketplaceCard(row, mSellers.get(row.seller_account_id), mCats.get(row.category_id ?? ""), mImages.get(row.id)),
+    ),
+  })
+}
+
+// Fixed-price ("buy now") horse listings, mapped to the marketplace card shape
+// so they render in the shared grid. Card hrefs point at /horses/buy-now/<slug>.
+export async function getBuyNowHorses(limit = 48): Promise<QueryResult<MarketplaceCard[]>> {
+  const setup = getClientOrEmpty<MarketplaceCard[]>([])
+  if (setup.result) return setup.result
+
+  const { data, error } = await setup.client
+    .from("horse_listings")
+    .select("*")
+    .eq("sale_mode", "buy_now")
+    .in("status", ["published", "under_offer"])
+    .not("published_at", "is", null)
+    .order("published_at", { ascending: false })
+    .limit(limit)
+
+  if (error) return emptyResult([], error.message)
+  const rows = data ?? []
+  const [sellers, images] = await Promise.all([
+    sellerMap(rows.map((row) => row.seller_account_id)),
+    imagesFor("horse_listing_id", rows.map((row) => row.id)),
+  ])
+
+  return emptyResult(
+    rows.map((row) => ({
+      id: row.slug,
+      recordId: row.id,
+      title: row.title,
+      price: money(row.asking_price),
+      image: primaryImage(images.get(row.id)),
+      location: locationFrom(row),
+      condition: "Horse",
+      category: "Buy now horse",
+      seller: sellers.get(row.seller_account_id)?.display_name ?? "Verified seller",
+      verified: sellers.get(row.seller_account_id)?.verification_status === "verified",
+      featured: Boolean(row.featured_until && new Date(row.featured_until).getTime() > Date.now()),
+      shipping: false,
+      createdAt: timeAgo(row.published_at ?? row.created_at),
+    })),
+  )
+}
+
+// Recently sold horses (auction + buy-now), for the /horses/sold results page.
+export async function getSoldHorses(limit = 48): Promise<QueryResult<MarketplaceCard[]>> {
+  const setup = getClientOrEmpty<MarketplaceCard[]>([])
+  if (setup.result) return setup.result
+
+  const { data, error } = await setup.client
+    .from("horse_listings")
+    .select("*")
+    .eq("status", "sold")
+    .order("sold_at", { ascending: false, nullsFirst: false })
+    .limit(limit)
+
+  if (error) return emptyResult([], error.message)
+  const rows = data ?? []
+  const [sellers, images] = await Promise.all([
+    sellerMap(rows.map((row) => row.seller_account_id)),
+    imagesFor("horse_listing_id", rows.map((row) => row.id)),
+  ])
+
+  return emptyResult(
+    rows.map((row) => ({
+      id: row.slug,
+      recordId: row.id,
+      title: row.title,
+      price: money(row.asking_price),
+      image: primaryImage(images.get(row.id)),
+      location: locationFrom(row),
+      condition: "Sold",
+      category: "Recently sold",
+      seller: sellers.get(row.seller_account_id)?.display_name ?? "Verified seller",
+      verified: sellers.get(row.seller_account_id)?.verification_status === "verified",
+      featured: false,
+      shipping: false,
+      createdAt: timeAgo(row.sold_at ?? row.published_at ?? row.created_at),
+    })),
+  )
 }
 
 export async function getBuyNowHorse(slug: string): Promise<QueryResult<MarketplaceDetail | null>> {
