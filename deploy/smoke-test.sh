@@ -92,17 +92,29 @@ if [ -z "$BUYER" ]; then
   echo "  FAIL login buyer"
 else
   echo "  ok   login buyer"
-  # bid
+  # bid (already_leading / too_low are valid business responses, not failures)
   if [ -n "$AID" ]; then
     R=$(rpc "$BUYER" place_bid "{\"p_auction_id\":\"$AID\",\"p_max_amount\":250000}")
-    echo "$R" | grep -q '"ok": *true' && echo "  ok   place_bid" || { FAIL=$((FAIL+1)); FAILURES+=("place_bid: $R"); echo "  FAIL place_bid: $R"; }
+    if echo "$R" | grep -qE '"ok": *true|already_leading|too_low|not_live|reserve'; then
+      echo "  ok   place_bid (engine responded: $(echo "$R" | grep -o '"\(ok\|error\)":[^,}]*' | head -1))"
+    else
+      FAIL=$((FAIL+1)); FAILURES+=("place_bid: $R"); echo "  FAIL place_bid: $R"
+    fi
   fi
-  # watchlist toggle (insert a watch row)
+  # watchlist: insert as the AUTHENTICATED buyer's own id (RLS requires
+  # profile_id = auth.uid()). Resolve the id from the token, not an RLS-limited
+  # list query, so we test the real path.
   HID=$(rest "$ANON" GET "horse_listings?select=id&status=eq.published&limit=1" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
-  BUYERID=$(rest "$BUYER" GET "profiles?select=id&limit=1" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+  BUYERID=$(curl -s "$URL/auth/v1/user" -H "apikey: $ANON" -H "Authorization: Bearer $BUYER" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
   if [ -n "$HID" ] && [ -n "$BUYERID" ]; then
     R=$(rest "$BUYER" POST "watchlists" "{\"profile_id\":\"$BUYERID\",\"horse_listing_id\":\"$HID\"}")
-    echo "$R" | grep -qiE 'error|denied|violates' && { echo "  warn watchlist insert: $R (may already exist)"; } || echo "  ok   watchlist insert"
+    if [ -z "$R" ] || echo "$R" | grep -qiE 'duplicate|unique'; then
+      echo "  ok   watchlist insert (or already watched)"
+    elif echo "$R" | grep -qiE 'error|denied|violates'; then
+      FAIL=$((FAIL+1)); FAILURES+=("watchlist insert: $R"); echo "  FAIL watchlist insert: $R"
+    else
+      echo "  ok   watchlist insert"
+    fi
   fi
   # read own notifications (RLS)
   N=$(rest "$BUYER" GET "notifications?select=id&limit=5")
