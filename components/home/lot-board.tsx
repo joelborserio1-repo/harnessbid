@@ -116,7 +116,7 @@ export function LotBoard({ lots }: { lots: HorseAuctionCard[] }) {
   ]
 
   return (
-    <section className="bg-background border-b border-border">
+    <section className="bg-card border-b border-border">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
         {/* Header row */}
         <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
