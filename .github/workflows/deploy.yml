@@ -34,6 +34,10 @@ jobs:
           DEPLOY_SSH_KEY: ~/.ssh/deploy_key
           DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
           DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+          # Root deploy (no /v2 base path). Site path from the xCloud panel.
+          DEPLOY_BASE_PATH: ""
+          DEPLOY_WEB_DIR: /var/www/harnessbid.com
+          DEPLOY_HEALTHCHECK_URL: https://harnessbid.com/
         run: |
           chmod +x deploy/deploy.sh
           ./deploy/deploy.sh
