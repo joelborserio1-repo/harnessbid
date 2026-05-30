@@ -33,6 +33,15 @@ grant usage on schema public to anon, authenticated, service_role;
 grant all on schema public to postgres, service_role;
 comment on schema public is 'standard public schema';
 
+-- Supabase Auth (GoTrue, role supabase_auth_admin) queries the public schema on
+-- every login/signup (profile lookup + the handle_new_user trigger). Dropping
+-- the schema revokes its access, causing "Database error querying schema" (500)
+-- on all auth. Restore it.
+grant usage on schema public to supabase_auth_admin;
+alter default privileges in schema public grant all on tables to supabase_auth_admin;
+alter default privileges in schema public grant all on sequences to supabase_auth_admin;
+alter default privileges in schema public grant all on functions to supabase_auth_admin;
+
 -- Dropping the public schema also destroyed the ALTER DEFAULT PRIVILEGES that
 -- Supabase normally configures so anon/authenticated/service_role automatically
 -- receive privileges on new objects. Without these, tables created afterward
@@ -43,3 +52,9 @@ comment on schema public is 'standard public schema';
 alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
 alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
+
+-- NOTE: ALTER DEFAULT PRIVILEGES only affects objects created AFTER this runs.
+-- If you reset an already-populated project, also grant existing objects:
+--   grant all on all tables in schema public to anon, authenticated, service_role, supabase_auth_admin;
+--   grant all on all sequences in schema public to anon, authenticated, service_role, supabase_auth_admin;
+--   grant all on all functions in schema public to anon, authenticated, service_role, supabase_auth_admin;
