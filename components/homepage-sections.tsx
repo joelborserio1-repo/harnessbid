@@ -75,19 +75,7 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
   const liveCount = auctions.length
 
   return (
-    <section className="relative isolate overflow-hidden bg-primary text-primary-foreground">
-      {/* Editorial photo, treated darkly so navy/gold type stays dominant */}
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src={assetPath("/thekingman.jpg")}
-          alt=""
-          fill
-          priority
-          className="object-cover object-center opacity-[0.18]"
-        />
-        <div className="absolute inset-0 bg-primary/85" />
-      </div>
-
+    <section className="bg-primary text-primary-foreground">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center">
           {/* Left: positioning + conversions */}
@@ -188,7 +176,7 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
       </div>
 
       {/* Trust / credibility strip — Inglis "ID transfer" + TradingRing "extended pedigree" */}
-      <div className="relative border-t border-primary-foreground/15 bg-primary/40 backdrop-blur-sm">
+      <div className="border-t border-primary-foreground/15 bg-primary">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs sm:text-[13px] text-primary-foreground/80">
           <span className="flex items-center gap-2">
             <BadgeCheck className="h-4 w-4 text-accent shrink-0" /> Verified bidders
