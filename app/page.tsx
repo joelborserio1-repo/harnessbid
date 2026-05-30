@@ -2,10 +2,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import {
   HeroSection,
-  MarketplaceCategoryStrip,
   LatestMarketplaceListings,
-  EnterpriseSellers,
-  TrustStrip,
   SellerCTA,
 } from "@/components/homepage-sections"
 import {
@@ -36,10 +33,10 @@ export default async function HomePage() {
         <HeroSection auctions={auctions.slice(0, 3)} />
         <LotBoard lots={auctions} />
         <FeaturedSales events={featuredSales} />
-        <MarketplaceCategoryStrip categories={marketplaceCategories.data ?? []} />
-        <LatestMarketplaceListings listings={marketplaceListings.data ?? []} />
-        <EnterpriseSellers />
-        <TrustStrip />
+        <LatestMarketplaceListings
+          listings={marketplaceListings.data ?? []}
+          categories={marketplaceCategories.data ?? []}
+        />
         <SellerCTA />
       </main>
       <Footer />

@@ -269,15 +269,21 @@ export function MarketplaceCategoryStrip({ categories }: { categories: Marketpla
 }
 
 /* ------------------------------------------------------------------------- */
-export function LatestMarketplaceListings({ listings }: { listings: MarketplaceCard[] }) {
+export function LatestMarketplaceListings({
+  listings,
+  categories = [],
+}: {
+  listings: MarketplaceCard[]
+  categories?: MarketplaceCategory[]
+}) {
   return (
     <section className="py-12 lg:py-16 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-6 pb-4 border-b border-border">
+        <div className="flex items-end justify-between mb-4 pb-4 border-b border-border">
           <div>
             <p className="font-sans text-xs uppercase tracking-[0.16em] text-accent mb-1">Marketplace</p>
             <h2 className="font-cinzel text-2xl sm:text-3xl font-semibold text-foreground">
-              Latest listings
+              Equipment, vehicles &amp; services
             </h2>
           </div>
           <Link href="/marketplace">
@@ -286,6 +292,22 @@ export function LatestMarketplaceListings({ listings }: { listings: MarketplaceC
             </Button>
           </Link>
         </div>
+
+        {/* Category chips merged in (was its own section) */}
+        {categories.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {categories.slice(0, 10).map((category) => (
+              <Link
+                key={category.id}
+                href={category.href}
+                className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-card px-2.5 py-1 text-xs text-foreground hover:border-accent transition-colors"
+              >
+                {category.name}
+                <span className="text-muted-foreground">{category.count}</span>
+              </Link>
+            ))}
+          </div>
+        )}
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {listings.length === 0 && (
