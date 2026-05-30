@@ -181,6 +181,11 @@ rm -rf "\$WEB_DIR/_next/static"
 cp -a "\$REL_DIR/.next/static" "\$WEB_DIR/_next/static"
 cp -a "\$REL_DIR/public/." "\$WEB_DIR/" 2>/dev/null || true
 cp "\$REL_DIR/deploy/xcloud-v2-proxy.php" "\$WEB_DIR/index.php"
+# Root deploys (empty base path) need an Apache rewrite so all non-static
+# requests reach the proxy; under a sub-path the directory handler covers this.
+if [ -z "\$BASE_PATH" ] && [ -f "\$REL_DIR/deploy/root.htaccess" ]; then
+  cp "\$REL_DIR/deploy/root.htaccess" "\$WEB_DIR/.htaccess"
+fi
 
 # 7. prune old releases (keep the most recent \$KEEP_RELEASES)
 cd "\$APP_DIR/releases"

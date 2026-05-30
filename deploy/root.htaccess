@@ -1,0 +1,29 @@
+# Root deployment routing for HarnessBid (Apache / xCloud).
+#
+# Serve real files directly (Next static assets copied to _next/static, and
+# everything under public/), and route all other requests to the PHP proxy,
+# which forwards to the Next.js server on 127.0.0.1:3001.
+#
+# Installed automatically by deploy/deploy.sh into the web root when
+# DEPLOY_BASE_PATH is empty (root deploy).
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Don't rewrite requests for files or directories that actually exist
+  # (static assets, public/ files, the proxy itself).
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else goes to the Next.js proxy.
+  RewriteRule ^ index.php [L]
+</IfModule>
+
+# Let the Next.js server set caching for proxied responses; static assets under
+# _next/static are content-hashed and safe to cache aggressively.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2?|png|jpg|jpeg|webp|avif|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
