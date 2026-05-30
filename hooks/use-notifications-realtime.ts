@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 
 const hasEnv = Boolean(
@@ -23,6 +23,9 @@ const hasEnv = Boolean(
  *  - live enquiry/messages threads
  */
 export function useNotificationsRealtime(onInsert: () => void) {
+  const onInsertRef = useRef(onInsert)
+  onInsertRef.current = onInsert
+
   useEffect(() => {
     if (!hasEnv) return
     let channel: ReturnType<ReturnType<typeof createSupabaseBrowserClient>["channel"]> | null = null
@@ -35,7 +38,7 @@ export function useNotificationsRealtime(onInsert: () => void) {
       if (!active || !userId) return
 
       channel = supabase
-        .channel(`notifications:${userId}`)
+        .channel(`notifications:${userId}:${Math.random().toString(36).slice(2)}`)
         .on(
           "postgres_changes",
           {
@@ -44,7 +47,7 @@ export function useNotificationsRealtime(onInsert: () => void) {
             table: "notifications",
             filter: `profile_id=eq.${userId}`,
           },
-          () => onInsert(),
+          () => onInsertRef.current(),
         )
         .subscribe()
     })
@@ -53,5 +56,5 @@ export function useNotificationsRealtime(onInsert: () => void) {
       active = false
       if (channel) supabase.removeChannel(channel)
     }
-  }, [onInsert])
+  }, [])
 }

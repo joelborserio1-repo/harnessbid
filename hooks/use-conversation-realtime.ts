@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 
 const hasEnv = Boolean(
@@ -14,11 +14,14 @@ const hasEnv = Boolean(
  * navigation) if it is not. Reuses the notifications realtime pattern.
  */
 export function useConversationRealtime(conversationId: string, onMessage: () => void) {
+  const onMessageRef = useRef(onMessage)
+  onMessageRef.current = onMessage
+
   useEffect(() => {
     if (!hasEnv || !conversationId) return
     const supabase = createSupabaseBrowserClient()
     const channel = supabase
-      .channel(`conversation:${conversationId}`)
+      .channel(`conversation:${conversationId}:${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         {
@@ -27,11 +30,11 @@ export function useConversationRealtime(conversationId: string, onMessage: () =>
           table: "messages",
           filter: `conversation_id=eq.${conversationId}`,
         },
-        () => onMessage(),
+        () => onMessageRef.current(),
       )
       .subscribe()
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [conversationId, onMessage])
+  }, [conversationId])
 }
