@@ -4,6 +4,14 @@
     {
       "path": "/api/cron/auctions",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/emails",
+      "schedule": "*/2 * * * *"
+    },
+    {
+      "path": "/api/cron/saved-searches",
+      "schedule": "0 */6 * * *"
     }
   ]
 }

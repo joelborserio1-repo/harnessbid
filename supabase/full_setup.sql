@@ -1,8 +1,6 @@
 -- HarnessBid — consolidated database setup (all migrations, in order).
 -- Generated from supabase/migrations/*. Paste into the Supabase SQL Editor
--- on a FRESH project and Run once. (CLI users: use 'supabase db push' with
--- the individual migration files instead — do not mix the two approaches.)
--- Then optionally run supabase/seed.sql (staging) and supabase/audit/rls_check.sql.
+-- on a FRESH project and Run once. (CLI users: use 'supabase db push').
 
 
 -- ============================================================================
@@ -2062,4 +2060,21 @@ revoke all on function public.handle_new_user() from public;
 revoke all on function public.notify_seller_of_enquiry() from public;
 revoke all on function public.create_conversation_from_enquiry() from public;
 revoke all on function public.handle_new_message() from public;
+
+
+-- ============================================================================
+-- supabase/migrations/202605290011_notification_email_outbox.sql
+-- ============================================================================
+-- Email outbox support: track which notifications have been emailed so a cron
+-- sweep can deliver transactional emails (outbid, auction won, enquiry, saved-
+-- search) exactly once, regardless of whether the notification row was created
+-- by app code or by a SQL function/trigger.
+
+alter table public.notifications
+  add column if not exists emailed_at timestamptz;
+
+-- Partial index for the sweep: quickly find recent, unread, un-emailed rows.
+create index if not exists notifications_email_pending_idx
+  on public.notifications (created_at)
+  where emailed_at is null;
 

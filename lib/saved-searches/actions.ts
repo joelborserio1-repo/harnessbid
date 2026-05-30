@@ -90,8 +90,9 @@ export async function toggleSavedSearchAlerts(formData: FormData): Promise<void>
   const id = String(formData.get("id") ?? "")
   const enabled = formData.get("enabled") === "true"
   if (!id) return
-  // TODO(Phase 14C+): email/realtime alert delivery. For now only the flag is
-  // stored — no alerts are sent.
+  // Alert delivery: the /api/cron/saved-searches sweep matches enabled searches
+  // against new listings and creates notifications, which /api/cron/emails then
+  // emails. Toggling this flag opts the search in/out of that sweep.
   await supabase
     .from("saved_searches")
     .update({ alert_enabled: enabled })

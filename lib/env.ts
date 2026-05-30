@@ -27,6 +27,9 @@ export const ENV_SPEC: EnvVar[] = [
   { name: "STRIPE_SECRET_KEY", required: false, public: false, description: "Stripe secret key (server-only)" },
   { name: "STRIPE_WEBHOOK_SECRET", required: false, public: false, description: "Stripe webhook signing secret" },
   { name: "CRON_SECRET", required: false, public: false, description: "Shared secret for scheduled-job routes" },
+  { name: "RESEND_API_KEY", required: false, public: false, description: "Resend API key (transactional email; emails no-op if unset)" },
+  { name: "EMAIL_FROM", required: false, public: false, description: "From address e.g. 'HarnessBid <noreply@harnessbid.com>'" },
+  { name: "NEXT_PUBLIC_SENTRY_DSN", required: false, public: true, description: "Sentry DSN for error tracking (disabled if unset)" },
 ]
 
 export type EnvReport = {

@@ -17,8 +17,13 @@ function emit(level: Level, message: string, context?: Record<string, unknown>) 
   const sink = level === "error" ? console.error : level === "warn" ? console.warn : console.log
   sink(isProd ? JSON.stringify(entry) : `[${level}] ${message}`, isProd ? "" : context ?? "")
 
-  // TODO(observability): forward to Sentry (errors) / PostHog (product events)
-  // when SENTRY_DSN / NEXT_PUBLIC_POSTHOG_KEY are configured.
+  // Forward errors to Sentry when a DSN is configured (no-op otherwise).
+  if (level === "error") {
+    // Lazy import to avoid pulling Sentry into the edge/client bundles.
+    import("./sentry")
+      .then((m) => m.captureError(message, context))
+      .catch(() => {})
+  }
 }
 
 export const logger = {

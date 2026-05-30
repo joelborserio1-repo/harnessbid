@@ -249,6 +249,7 @@ type NotificationRow = {
   related_entity_type: string | null
   related_entity_id: string | null
   read_at: string | null
+  emailed_at: string | null
   created_at: string
 }
 
