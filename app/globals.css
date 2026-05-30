@@ -3,106 +3,107 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* HarnessBid Premium Theme - Brand Color #00205F */
+/* HarnessBid Theme — warm navy + amber gold + cream
+   Navy #14294A · Gold #E0A33C · Cream #F1ECE3 */
 :root {
-  /* Primary Navy - HarnessBid brand #00205F */
-  --background: oklch(0.96 0.01 250);
-  --foreground: oklch(0.15 0.03 250);
-  
+  /* Warm cream paper */
+  --background: #F1ECE3;
+  --foreground: #1B2B47;
+
   /* Card surfaces */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.03 250);
-  
+  --card: #FFFFFF;
+  --card-foreground: #1B2B47;
+
   /* Popover */
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.03 250);
-  
-  /* Primary - Deep Navy #00205F */
-  --primary: #00205F;
-  --primary-foreground: #ffffff;
-  
-  /* Secondary */
-  --secondary: oklch(0.94 0.01 250);
-  --secondary-foreground: #00205F;
-  
+  --popover: #FFFFFF;
+  --popover-foreground: #1B2B47;
+
+  /* Primary — warm Navy #14294A */
+  --primary: #14294A;
+  --primary-foreground: #FFFFFF;
+
+  /* Secondary — cream tint */
+  --secondary: #EAE3D7;
+  --secondary-foreground: #14294A;
+
   /* Muted */
-  --muted: oklch(0.94 0.01 250);
-  --muted-foreground: oklch(0.45 0.03 250);
-  
-  /* Accent - Gold */
-  --accent: oklch(0.75 0.12 85);
-  --accent-foreground: oklch(0.15 0.03 250);
-  
+  --muted: #EAE3D7;
+  --muted-foreground: #5B6478;
+
+  /* Accent — amber Gold #E0A33C */
+  --accent: #E0A33C;
+  --accent-foreground: #14294A;
+
   /* Destructive */
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.98 0 0);
-  
-  /* Borders */
-  --border: oklch(0.88 0.01 250);
-  --input: oklch(0.92 0.01 250);
-  --ring: #00205F;
-  
+
+  /* Borders — warm hairline */
+  --border: #DFD8CB;
+  --input: #E6E0D4;
+  --ring: #14294A;
+
   /* Charts */
-  --chart-1: #00205F;
-  --chart-2: oklch(0.75 0.12 85);
-  --chart-3: oklch(0.45 0.03 250);
-  --chart-4: oklch(0.65 0.06 250);
-  --chart-5: oklch(0.85 0.08 85);
-  
+  --chart-1: #14294A;
+  --chart-2: #E0A33C;
+  --chart-3: #5B6478;
+  --chart-4: #3C5378;
+  --chart-5: #EBC176;
+
   --radius: 0.5rem;
-  
+
   /* Sidebar */
-  --sidebar: #00205F;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: oklch(0.75 0.12 85);
-  --sidebar-primary-foreground: oklch(0.15 0.03 250);
-  --sidebar-accent: #00205F;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #00205F;
-  --sidebar-ring: oklch(0.75 0.12 85);
-  
-  /* Custom HarnessBid tokens - Brand #00205F */
-  --navy: #00205F;
-  --navy-deep: #00205F;
-  --navy-darker: #00205F;
-  --gold: oklch(0.75 0.12 85);
-  --gold-light: oklch(0.85 0.08 85);
-  --gold-dark: oklch(0.65 0.14 85);
+  --sidebar: #14294A;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #E0A33C;
+  --sidebar-primary-foreground: #14294A;
+  --sidebar-accent: #14294A;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #14294A;
+  --sidebar-ring: #E0A33C;
+
+  /* Custom HarnessBid tokens */
+  --navy: #14294A;
+  --navy-deep: #0E1E38;
+  --navy-darker: #0A1730;
+  --gold: #E0A33C;
+  --gold-light: #EBC176;
+  --gold-dark: #C2862A;
 }
 
 .dark {
-  --background: oklch(0.15 0.07 260);
-  --foreground: oklch(0.96 0.01 250);
-  --card: oklch(0.20 0.08 260);
-  --card-foreground: oklch(0.96 0.01 250);
-  --popover: oklch(0.20 0.08 260);
-  --popover-foreground: oklch(0.96 0.01 250);
-  --primary: #00205F;
-  --primary-foreground: #ffffff;
-  --secondary: oklch(0.28 0.07 260);
-  --secondary-foreground: oklch(0.96 0.01 250);
-  --muted: oklch(0.28 0.07 260);
-  --muted-foreground: oklch(0.65 0.02 250);
-  --accent: oklch(0.75 0.12 85);
-  --accent-foreground: oklch(0.15 0.07 260);
+  --background: #0E1E38;
+  --foreground: #F1ECE3;
+  --card: #14294A;
+  --card-foreground: #F1ECE3;
+  --popover: #14294A;
+  --popover-foreground: #F1ECE3;
+  --primary: #E0A33C;
+  --primary-foreground: #14294A;
+  --secondary: #1B3357;
+  --secondary-foreground: #F1ECE3;
+  --muted: #1B3357;
+  --muted-foreground: #A9B2C4;
+  --accent: #E0A33C;
+  --accent-foreground: #14294A;
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.32 0.07 260);
-  --input: oklch(0.28 0.07 260);
-  --ring: #00205F;
-  --chart-1: oklch(0.75 0.12 85);
-  --chart-2: oklch(0.55 0.06 250);
-  --chart-3: oklch(0.85 0.08 85);
-  --chart-4: oklch(0.45 0.04 250);
-  --chart-5: oklch(0.65 0.10 85);
-  --sidebar: #00205F;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: oklch(0.75 0.12 85);
-  --sidebar-primary-foreground: oklch(0.15 0.07 260);
-  --sidebar-accent: #00205F;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #00205F;
-  --sidebar-ring: oklch(0.75 0.12 85);
+  --border: #244069;
+  --input: #1B3357;
+  --ring: #E0A33C;
+  --chart-1: #E0A33C;
+  --chart-2: #3C5378;
+  --chart-3: #EBC176;
+  --chart-4: #5B6478;
+  --chart-5: #C2862A;
+  --sidebar: #0E1E38;
+  --sidebar-foreground: #F1ECE3;
+  --sidebar-primary: #E0A33C;
+  --sidebar-primary-foreground: #14294A;
+  --sidebar-accent: #14294A;
+  --sidebar-accent-foreground: #F1ECE3;
+  --sidebar-border: #244069;
+  --sidebar-ring: #E0A33C;
 }
 
 @theme inline {
