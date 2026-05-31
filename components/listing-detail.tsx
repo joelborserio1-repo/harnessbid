@@ -8,7 +8,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Heart,
-  Share2,
   MapPin,
   BadgeCheck,
   Truck,
@@ -24,6 +23,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { ShareButton } from "@/components/listings/share-button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
@@ -382,9 +382,7 @@ function ListingInfoCard({ listing }: { listing: ReturnType<typeof toEquipmentLi
             <Button variant="outline" size="icon">
               <Heart className="h-5 w-5" />
             </Button>
-            <Button variant="outline" size="icon">
-              <Share2 className="h-5 w-5" />
-            </Button>
+            <ShareButton title={listing.title} variant="icon" />
           </div>
 
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -674,9 +672,7 @@ function AuctionInfoCard({
               <Heart className="mr-2 h-4 w-4" />
               Watch
             </Button>
-            <Button variant="outline" size="icon">
-              <Share2 className="h-5 w-5" />
-            </Button>
+            <ShareButton title={listing.title} variant="icon" />
           </div>
 
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
