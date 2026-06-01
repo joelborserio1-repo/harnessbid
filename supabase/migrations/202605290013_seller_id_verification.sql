@@ -43,9 +43,12 @@ create policy "Owners delete own id docs"
 --  bypasses these policies - so no broad staff storage policy is needed.)
 
 -- 2) Verification request record.
-create type public.id_doc_type as enum ('drivers_license', 'passport', 'national_id', 'other');
+do $$ begin
+  create type public.id_doc_type as enum ('drivers_license', 'passport', 'national_id', 'other');
+exception when duplicate_object then null;
+end $$;
 
-create table public.verification_documents (
+create table if not exists public.verification_documents (
   id uuid primary key default gen_random_uuid(),
   seller_account_id uuid not null references public.seller_accounts(id) on delete cascade,
   profile_id uuid not null references public.profiles(id) on delete cascade,
@@ -61,9 +64,10 @@ create table public.verification_documents (
   updated_at timestamptz not null default now()
 );
 
-create index verification_documents_seller_idx on public.verification_documents(seller_account_id, created_at desc);
-create index verification_documents_status_idx on public.verification_documents(status, created_at);
+create index if not exists verification_documents_seller_idx on public.verification_documents(seller_account_id, created_at desc);
+create index if not exists verification_documents_status_idx on public.verification_documents(status, created_at);
 
+drop trigger if exists set_verification_documents_updated_at on public.verification_documents;
 create trigger set_verification_documents_updated_at
   before update on public.verification_documents
   for each row execute function public.set_updated_at();
@@ -71,6 +75,7 @@ create trigger set_verification_documents_updated_at
 alter table public.verification_documents enable row level security;
 
 -- Owner can create + read their own verification records; staff manage all.
+drop policy if exists "Owners create their verification docs" on public.verification_documents;
 create policy "Owners create their verification docs"
   on public.verification_documents for insert to authenticated
   with check (
@@ -81,10 +86,12 @@ create policy "Owners create their verification docs"
     )
   );
 
+drop policy if exists "Owners read their verification docs" on public.verification_documents;
 create policy "Owners read their verification docs"
   on public.verification_documents for select to authenticated
   using (profile_id = auth.uid() or public.is_admin());
 
+drop policy if exists "Staff manage verification docs" on public.verification_documents;
 create policy "Staff manage verification docs"
   on public.verification_documents for all to authenticated
   using (public.is_admin())
