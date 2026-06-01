@@ -13,11 +13,12 @@ export type MessageActionResult = { ok: boolean; error?: string }
 export async function sendMessageAction(
   conversationId: string,
   body: string,
+  attachment?: { url: string; type: string } | null,
 ): Promise<MessageActionResult> {
   if (!hasSupabaseEnv()) return { ok: false, error: "Messaging is not available yet." }
   const trimmed = body.trim()
   if (!conversationId) return { ok: false, error: "Invalid conversation." }
-  if (trimmed.length === 0) return { ok: false, error: "Enter a message." }
+  if (trimmed.length === 0 && !attachment) return { ok: false, error: "Enter a message." }
   if (trimmed.length > 4000) return { ok: false, error: "Message is too long." }
 
   const supabase = await createSupabaseServerAuthClient()
@@ -39,11 +40,24 @@ export async function sendMessageAction(
     .maybeSingle()
   if (!conv) return { ok: false, error: "Conversation not found." }
 
+  // Validate the attachment URL belongs to our bucket (defense-in-depth).
+  let attachmentUrl: string | null = null
+  let attachmentType: string | null = null
+  if (attachment?.url) {
+    if (!attachment.url.includes("/message-attachments/")) {
+      return { ok: false, error: "Invalid attachment." }
+    }
+    attachmentUrl = attachment.url
+    attachmentType = attachment.type || null
+  }
+
   const { error } = await supabase.from("messages").insert({
     conversation_id: conversationId,
     sender_profile_id: user.id,
-    body: trimmed,
-  })
+    body: trimmed || (attachmentType?.startsWith("image/") ? "Shared an image" : "Shared an attachment"),
+    attachment_url: attachmentUrl,
+    attachment_type: attachmentType,
+  } as never)
   if (error) return { ok: false, error: "Could not send your message. Please try again." }
 
   revalidatePath(`/dashboard/messages/${conversationId}`)

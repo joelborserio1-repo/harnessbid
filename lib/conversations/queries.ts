@@ -21,6 +21,8 @@ export type ConversationMessage = {
   body: string
   createdAt: string
   read: boolean
+  attachmentUrl?: string | null
+  attachmentType?: string | null
 }
 
 export type ConversationDetail = {
@@ -171,7 +173,7 @@ export async function getConversation(id: string): Promise<ConversationDetail | 
   const labels = await resolveLabels(supabase, [c])
   const { data: msgs } = await supabase
     .from("messages")
-    .select("id, sender_profile_id, body, read_at, created_at")
+    .select("id, sender_profile_id, body, read_at, created_at, attachment_url, attachment_type")
     .eq("conversation_id", id)
     .order("created_at", { ascending: true })
 
@@ -196,6 +198,8 @@ export async function getConversation(id: string): Promise<ConversationDetail | 
       body: m.body,
       createdAt: m.created_at,
       read: m.read_at !== null,
+      attachmentUrl: (m as { attachment_url?: string | null }).attachment_url ?? null,
+      attachmentType: (m as { attachment_type?: string | null }).attachment_type ?? null,
     })),
   }
 }
