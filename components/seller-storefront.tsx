@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import type { SellerStorefront } from "@/lib/supabase/queries"
 import { EnquiryDialog, type EnquiryTarget } from "@/components/enquiries/enquiry-dialog"
+import { SellerReviews } from "@/components/reviews/seller-reviews"
+import type { SellerReview } from "@/lib/reviews/queries"
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("en-US", {
@@ -31,9 +33,13 @@ function formatDate(value: string | null) {
 export function SellerStorefrontPage({
   storefront,
   isOwner = false,
+  reviews = [],
+  canReview = false,
 }: {
   storefront: SellerStorefront
   isOwner?: boolean
+  reviews?: SellerReview[]
+  canReview?: boolean
 }) {
   const { seller, enterprise, saleEvents, marketplaceListings, horseAuctions } = storefront
   const hasActivity = saleEvents.length > 0 || marketplaceListings.length > 0 || horseAuctions.length > 0
@@ -210,6 +216,15 @@ export function SellerStorefrontPage({
               </div>
             </section>
           )}
+
+          <SellerReviews
+            sellerAccountId={seller.id}
+            sellerSlug={seller.slug}
+            rating={seller.rating}
+            reviewCount={seller.reviewCount}
+            reviews={reviews}
+            canReview={canReview}
+          />
         </section>
       </main>
       <Footer />

@@ -241,6 +241,16 @@ type VerificationDocumentRow = {
   updated_at: string
 }
 
+type SellerReviewRow = {
+  id: string
+  seller_account_id: string
+  reviewer_profile_id: string
+  rating: number
+  comment: string | null
+  created_at: string
+  updated_at: string
+}
+
 type BidRow = {
   id: string
   auction_id: string
@@ -479,6 +489,7 @@ export type Database = {
       listing_reports: TableFrom<ListingReportRow>
       moderation_logs: TableFrom<ModerationLogRow>
       verification_documents: TableFrom<VerificationDocumentRow>
+      seller_reviews: TableFrom<SellerReviewRow>
       conversations: TableFrom<ConversationRow>
       messages: TableFrom<MessageRow>
       sale_events: TableFrom<SaleEventRow>

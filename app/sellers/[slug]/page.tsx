@@ -2,6 +2,8 @@ import { SellerStorefrontPage } from "@/components/seller-storefront"
 import { EmptyStatePage } from "@/components/static-pages"
 import { getSellerStorefront } from "@/lib/supabase/queries"
 import { viewerOwnsSeller } from "@/lib/enquiries/queries"
+import { getSellerReviews } from "@/lib/reviews/queries"
+import { getSessionUser } from "@/lib/supabase/auth-server"
 import { Building2, Search } from "lucide-react"
 
 export default async function SellerPage({
@@ -39,6 +41,17 @@ export default async function SellerPage({
     )
   }
 
-  const isOwner = await viewerOwnsSeller(storefront.data.seller.id)
-  return <SellerStorefrontPage storefront={storefront.data} isOwner={isOwner} />
+  const [isOwner, reviews, user] = await Promise.all([
+    viewerOwnsSeller(storefront.data.seller.id),
+    getSellerReviews(storefront.data.seller.id),
+    getSessionUser(),
+  ])
+  return (
+    <SellerStorefrontPage
+      storefront={storefront.data}
+      isOwner={isOwner}
+      reviews={reviews}
+      canReview={Boolean(user) && !isOwner}
+    />
+  )
 }
