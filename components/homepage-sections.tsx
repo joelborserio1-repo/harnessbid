@@ -76,100 +76,106 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
 
   return (
     <section className="relative isolate overflow-hidden bg-champagne text-foreground">
-      {/* Cinematic horse image faded into the warm background from the right */}
+      {/* Cinematic horse image faded subtly behind the whole hero so the
+          two-column content (text + featured lots) stays fully readable. */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute right-0 top-0 h-full w-full lg:w-[62%]">
-          <Image
-            src={assetPath("/thekingman.jpg")}
-            alt=""
-            fill
-            priority
-            className="object-cover object-center"
-          />
-          {/* Soft overlays: fade to champagne on the left + lift the bottom */}
-          <div className="absolute inset-0 bg-gradient-to-r from-champagne via-champagne/85 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-champagne/70 via-transparent to-champagne/20" />
-        </div>
+        <Image
+          src={assetPath("/thekingman.jpg")}
+          alt=""
+          fill
+          priority
+          className="object-cover object-center opacity-25"
+        />
+        {/* Warm wash so type and cards read cleanly over the photo */}
+        <div className="absolute inset-0 bg-gradient-to-r from-champagne via-champagne/90 to-champagne/75" />
+        <div className="absolute inset-0 bg-gradient-to-t from-champagne/80 via-transparent to-champagne/30" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
-        <div className="max-w-2xl">
-          {/* Live-sale signal */}
-          <div className="mb-6 flex flex-wrap items-center gap-2.5">
-            <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-medium tracking-wide text-gold-dark">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+        <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
+          {/* Left: positioning + conversions */}
+          <div className="max-w-xl">
+            {/* Live-sale signal */}
+            <div className="mb-6 flex flex-wrap items-center gap-2.5">
+              <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-medium tracking-wide text-gold-dark">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+                </span>
+                {liveCount > 0 ? `Live now · ${liveCount} lot${liveCount === 1 ? "" : "s"} open` : "Sale ring opening soon"}
               </span>
-              {liveCount > 0 ? `Live now · ${liveCount} lot${liveCount === 1 ? "" : "s"} open` : "Sale ring opening soon"}
-            </span>
-            {countdown && countdown !== "closing" && (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1 text-[11px] text-muted-foreground">
-                <Clock className="h-3 w-3 text-accent" />
-                Closes in <span className="font-mono tabular-nums text-foreground">{countdown}</span>
-              </span>
-            )}
+              {countdown && countdown !== "closing" && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1 text-[11px] text-muted-foreground">
+                  <Clock className="h-3 w-3 text-accent" />
+                  Closes in <span className="font-mono tabular-nums text-foreground">{countdown}</span>
+                </span>
+              )}
+            </div>
+
+            <p className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.24em] text-gold-dark mb-5">
+              Online auctions for standardbred bloodstock
+            </p>
+            <h1 className="font-cinzel text-4xl sm:text-6xl lg:text-7xl font-medium leading-[1.04] tracking-tight text-balance text-primary">
+              Where champions
+              <span className="block italic text-gold-dark">change hands</span>
+            </h1>
+            <p className="mt-6 text-base sm:text-lg text-ink-soft/80 max-w-xl leading-relaxed">
+              Live online auctions for standardbred racehorses, broodmares, yearlings and
+              shares — every lot with a verified pedigree, and the sale ring at your fingertips.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/register">
+                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm rounded-sm">
+                  <Gavel className="mr-2 h-4 w-4" />
+                  Register to bid
+                </Button>
+              </Link>
+              <Link href="/sell/horse">
+                <Button size="lg" variant="outline" className="border-primary/30 text-primary hover:bg-primary/5 rounded-sm">
+                  Sell a horse
+                </Button>
+              </Link>
+            </div>
+
+            {/* Search */}
+            <form action="/search" className="mt-7 max-w-md relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                name="q"
+                type="search"
+                placeholder="Search horses, equipment, services…"
+                className="h-12 bg-card/90 backdrop-blur text-foreground placeholder:text-muted-foreground pl-10 rounded-sm border border-border shadow-sm"
+              />
+            </form>
           </div>
 
-          <p className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.24em] text-gold-dark mb-5">
-            Online auctions for standardbred bloodstock
-          </p>
-          <h1 className="font-cinzel text-4xl sm:text-6xl lg:text-7xl font-medium leading-[1.04] tracking-tight text-balance text-primary">
-            Where champions
-            <span className="block italic text-gold-dark">change hands</span>
-          </h1>
-          <p className="mt-6 text-base sm:text-lg text-ink-soft/80 max-w-xl leading-relaxed">
-            Live online auctions for standardbred racehorses, broodmares, yearlings and
-            shares — every lot with a verified pedigree, and the sale ring at your fingertips.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/register">
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm rounded-sm">
-                <Gavel className="mr-2 h-4 w-4" />
-                Register to bid
-              </Button>
-            </Link>
-            <Link href="/sell/horse">
-              <Button size="lg" variant="outline" className="border-primary/30 text-primary hover:bg-primary/5 rounded-sm">
-                Sell a horse
-              </Button>
-            </Link>
-          </div>
-
-          {/* Search */}
-          <form action="/search" className="mt-7 max-w-md relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              name="q"
-              type="search"
-              placeholder="Search horses, equipment, services…"
-              className="h-12 bg-card/90 backdrop-blur text-foreground placeholder:text-muted-foreground pl-10 rounded-sm border border-border shadow-sm"
-            />
-          </form>
-
-          {/* Featured lots — slim inline row, elegant on the warm ground */}
+          {/* Right: featured lots, beside the headline */}
           {auctions.length > 0 && (
-            <div className="mt-10">
+            <div className="lg:pl-2">
               <div className="flex items-center justify-between mb-3">
                 <span className="font-sans text-[11px] uppercase tracking-[0.18em] text-gold-dark">Featured lots</span>
                 <Link href="/auctions" className="text-[11px] text-muted-foreground hover:text-primary flex items-center gap-1">
                   All auctions <ChevronRight className="h-3 w-3" />
                 </Link>
               </div>
-              <ul className="grid sm:grid-cols-3 gap-2.5">
-                {auctions.slice(0, 3).map((a) => (
+              <ul className="space-y-2.5">
+                {auctions.slice(0, 4).map((a) => (
                   <li key={a.id}>
                     <Link
                       href={`/auctions/${a.id}`}
-                      className="flex items-center gap-2.5 rounded-sm border border-border bg-card/85 backdrop-blur p-2.5 shadow-sm hover:border-accent transition-colors"
+                      className="flex items-center gap-3 rounded-lg border border-border bg-card/90 backdrop-blur p-3 shadow-sm hover:border-accent transition-colors"
                     >
-                      <div className="relative h-11 w-14 shrink-0 overflow-hidden rounded-sm bg-muted">
+                      <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-sm bg-muted">
                         <Image src={a.image} alt={a.name} fill className="object-cover" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium text-[13px] text-foreground">{a.name}</p>
-                        <p className="font-mono text-xs text-gold-dark tabular-nums">{formatCurrency(a.currentBid)}</p>
+                        <p className="truncate font-medium text-sm text-foreground">{a.name}</p>
+                        <p className="text-[11px] text-muted-foreground">{a.endTime} · {a.bids} bids</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Current</p>
+                        <p className="font-mono font-semibold text-sm text-gold-dark tabular-nums">{formatCurrency(a.currentBid)}</p>
                       </div>
                     </Link>
                   </li>
@@ -180,17 +186,17 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
         </div>
       </div>
 
-      {/* Trust / credibility strip — content unchanged; refined spacing + light theme */}
-      <div className="relative border-t border-border bg-stone/70 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-center gap-x-10 gap-y-2.5 text-xs sm:text-[13px] text-ink-soft/80">
+      {/* Trust / credibility strip — navy band to split the page. Content unchanged. */}
+      <div className="relative border-t border-primary/20 bg-primary text-primary-foreground">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-center gap-x-10 gap-y-2.5 text-xs sm:text-[13px] text-primary-foreground/85">
           <span className="flex items-center gap-2.5">
             <BadgeCheck className="h-[18px] w-[18px] text-accent shrink-0" strokeWidth={1.75} /> Verified bidders
           </span>
-          <span className="hidden sm:inline text-border">·</span>
+          <span className="hidden sm:inline text-primary-foreground/25">·</span>
           <span className="flex items-center gap-2.5">
             <FileText className="h-[18px] w-[18px] text-accent shrink-0" strokeWidth={1.75} /> Professional extended pedigree on every lot
           </span>
-          <span className="hidden sm:inline text-border">·</span>
+          <span className="hidden sm:inline text-primary-foreground/25">·</span>
           <span className="flex items-center gap-2.5">
             <ShieldCheck className="h-[18px] w-[18px] text-accent shrink-0" strokeWidth={1.75} /> Secure ownership &amp; ID transfer
           </span>
