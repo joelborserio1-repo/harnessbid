@@ -5,6 +5,7 @@ import { PageFrame } from "@/components/static-pages"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { signOutAction } from "@/lib/auth/actions"
+import { VerificationForm } from "@/components/verification/verification-form"
 import {
   getCurrentProfile,
   getOwnedSellerAccount,
@@ -86,6 +87,12 @@ export default async function AccountPage() {
             </div>
           </CardContent>
         </Card>
+
+        {sellerAccount && (
+          <div className="mt-6">
+            <VerificationForm currentStatus={sellerAccount.verificationStatus} />
+          </div>
+        )}
       </section>
     </PageFrame>
   )

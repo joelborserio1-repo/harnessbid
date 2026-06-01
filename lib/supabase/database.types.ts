@@ -225,6 +225,22 @@ type ModerationLogRow = {
   created_at: string
 }
 
+type VerificationDocumentRow = {
+  id: string
+  seller_account_id: string
+  profile_id: string
+  doc_type: string
+  full_legal_name: string | null
+  front_path: string
+  back_path: string | null
+  status: string
+  review_notes: string | null
+  reviewed_by: string | null
+  reviewed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
 type BidRow = {
   id: string
   auction_id: string
@@ -462,6 +478,7 @@ export type Database = {
       bids: TableFrom<BidRow>
       listing_reports: TableFrom<ListingReportRow>
       moderation_logs: TableFrom<ModerationLogRow>
+      verification_documents: TableFrom<VerificationDocumentRow>
       conversations: TableFrom<ConversationRow>
       messages: TableFrom<MessageRow>
       sale_events: TableFrom<SaleEventRow>
