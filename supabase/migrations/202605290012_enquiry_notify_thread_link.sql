@@ -63,7 +63,7 @@ end;
 $$;
 
 -- 2) Older enquiry trigger: stop sending the generic /dashboard/messages
---    notification so sellers don't get two notifications for one enquiry. The
+--    notification so sellers do not get two notifications for one enquiry. The
 --    conversation trigger above now owns enquiry notifications. (We keep the
 --    function defined but make it a no-op insert path.)
 create or replace function public.notify_seller_of_enquiry()

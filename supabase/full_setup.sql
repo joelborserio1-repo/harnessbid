@@ -1,10 +1,9 @@
 -- HarnessBid — consolidated database setup (all migrations, in order).
--- Paste into the Supabase SQL Editor on a fresh project. (CLI: supabase db push.)
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605280001_harnessbid_v2_schema.sql
--- ============================================================================
+-- ====================
 -- HarnessBid v2 core schema
 -- Supabase/Postgres migration for marketplace, horse auctions, sellers, and future payments.
 
@@ -840,9 +839,9 @@ create policy "Payment events are admin only"
   with check (public.is_admin());
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605280002_seed_categories.sql
--- ============================================================================
+-- ====================
 -- Baseline HarnessBid v2 categories inferred from the v0 UI.
 
 insert into public.categories (category_type, name, slug, sort_order, metadata)
@@ -875,9 +874,9 @@ set
   updated_at = now();
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290001_auth_profile_trigger.sql
--- ============================================================================
+-- ====================
 -- Auto-create a public.profiles row whenever a new auth user is created.
 -- This is the canonical Supabase pattern and keeps profile creation reliable
 -- even when email confirmation is enabled (no client session at signup time)
@@ -916,9 +915,9 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290002_listing_images_storage.sql
--- ============================================================================
+-- ====================
 -- Storage bucket + policies for seller listing image uploads (Phase 13).
 --
 -- Path convention: <auth.uid()>/<listing-scope>/<filename>
@@ -980,9 +979,9 @@ create policy "Sellers delete own listing images"
   );
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290003_notifications_saved_searches.sql
--- ============================================================================
+-- ====================
 -- Phase 14B: notifications + saved searches (engagement layer).
 --
 -- Notifications are created server-side only:
@@ -1105,9 +1104,9 @@ create trigger on_enquiry_created
   for each row execute function public.notify_seller_of_enquiry();
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290004_auction_bidding_engine.sql
--- ============================================================================
+-- ====================
 -- Phase 15: Auction bidding engine.
 --
 -- All bid mutation logic lives in SECURITY DEFINER Postgres functions that lock
@@ -1448,9 +1447,9 @@ grant execute on function public.get_auction_bid_history(uuid) to anon, authenti
 --   );
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290005_admin_moderation.sql
--- ============================================================================
+-- ====================
 -- Phase 16: admin + moderation layer.
 --
 -- Adds staff roles, a staff predicate, additive (permissive) RLS so staff can
@@ -1575,9 +1574,9 @@ create policy "Staff write moderation logs"
   with check (public.is_staff() and actor_profile_id = auth.uid());
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290006_payments_commercial.sql
--- ============================================================================
+-- ====================
 -- Phase 17: payments + commercial logic (architecture / placeholders).
 --
 -- Adds commercial status fields and billing tables WITHOUT changing existing
@@ -1753,9 +1752,9 @@ create trigger set_payouts_updated_at
   for each row execute function public.set_updated_at();
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290007_sale_event_catalogue.sql
--- ============================================================================
+-- ====================
 -- Phase 18: enterprise sale events + catalogue mode.
 --
 -- Adds lot numbering/ordering to listings and event ordering/featured flags.
@@ -1785,9 +1784,9 @@ create index if not exists sale_events_featured_idx
   on public.sale_events(featured, sort_order);
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290008_conversations_messages.sql
--- ============================================================================
+-- ====================
 -- Phase 19: conversations + messages (buyer/seller threads).
 --
 -- Enquiries are preserved exactly as-is. A SECURITY DEFINER trigger turns each
@@ -2034,9 +2033,9 @@ join public.enquiries e on e.id = c.enquiry_id
 where not exists (select 1 from public.messages m where m.conversation_id = c.id);
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290009_cron_grants.sql
--- ============================================================================
+-- ====================
 -- Phase 20: allow the service role to run the auction transition sweep so it
 -- can be invoked from a secured server route (Vercel Cron / external scheduler)
 -- as well as pg_cron. The function remains revoked from public/authenticated.
@@ -2044,9 +2043,9 @@ where not exists (select 1 from public.messages m where m.conversation_id = c.id
 grant execute on function public.process_auction_transitions() to service_role;
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290010_revoke_definer_triggers.sql
--- ============================================================================
+-- ====================
 -- Phase 21 hardening: revoke PUBLIC execute on the remaining SECURITY DEFINER
 -- trigger functions, mirroring the auction internals in 202605290004.
 --
@@ -2061,9 +2060,9 @@ revoke all on function public.create_conversation_from_enquiry() from public;
 revoke all on function public.handle_new_message() from public;
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290011_notification_email_outbox.sql
--- ============================================================================
+-- ====================
 -- Email outbox support: track which notifications have been emailed so a cron
 -- sweep can deliver transactional emails (outbid, auction won, enquiry, saved-
 -- search) exactly once, regardless of whether the notification row was created
@@ -2078,9 +2077,9 @@ create index if not exists notifications_email_pending_idx
   where emailed_at is null;
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290012_enquiry_notify_thread_link.sql
--- ============================================================================
+-- ====================
 -- Make enquiry notifications deep-link to the exact conversation thread, so a
 -- seller can click the notification and land directly on the reply view.
 --
@@ -2146,7 +2145,7 @@ end;
 $$;
 
 -- 2) Older enquiry trigger: stop sending the generic /dashboard/messages
---    notification so sellers don't get two notifications for one enquiry. The
+--    notification so sellers do not get two notifications for one enquiry. The
 --    conversation trigger above now owns enquiry notifications. (We keep the
 --    function defined but make it a no-op insert path.)
 create or replace function public.notify_seller_of_enquiry()
@@ -2163,9 +2162,9 @@ end;
 $$;
 
 
--- ============================================================================
+-- ====================
 -- supabase/migrations/202605290013_seller_id_verification.sql
--- ============================================================================
+-- ====================
 -- Seller ID verification: private document storage + a review record per
 -- seller account. Sellers upload front/back of a government ID; staff review and
 -- approve/reject, which drives seller_accounts.verification_status.
