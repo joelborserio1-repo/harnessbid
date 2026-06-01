@@ -244,7 +244,7 @@ function FilterSidebar({ categories, className = "" }: { categories: Marketplace
   )
 }
 
-function ListingCard({ listing, view = "grid" }: { listing: MarketplaceCard, view?: "grid" | "list" }) {
+export function ListingCard({ listing, view = "grid" }: { listing: MarketplaceCard, view?: "grid" | "list" }) {
   if (view === "list") {
     return (
       <Link href={`/marketplace/${listing.id}`}>

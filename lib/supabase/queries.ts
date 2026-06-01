@@ -386,6 +386,83 @@ export async function getMarketplaceListings(
   )
 }
 
+export type MarketplaceSearch = {
+  q?: string
+  categorySlug?: string
+  condition?: string
+  minPrice?: number
+  maxPrice?: number
+  sort?: "newest" | "price-low" | "price-high"
+  page?: number
+  perPage?: number
+}
+
+export type MarketplaceSearchResult = {
+  items: MarketplaceCard[]
+  total: number
+  page: number
+  perPage: number
+  totalPages: number
+}
+
+/**
+ * Server-side marketplace search: filters (q / category / condition / price),
+ * sort, and pagination — all driven from URL params so results persist on
+ * refresh and are shareable. Returns the page of items plus the total count.
+ */
+export async function searchMarketplace(opts: MarketplaceSearch): Promise<QueryResult<MarketplaceSearchResult>> {
+  const perPage = Math.min(Math.max(opts.perPage ?? 24, 1), 60)
+  const page = Math.max(opts.page ?? 1, 1)
+  const empty: MarketplaceSearchResult = { items: [], total: 0, page, perPage, totalPages: 0 }
+  const setup = getClientOrEmpty<MarketplaceSearchResult>(empty)
+  if (setup.result) return setup.result
+
+  // Resolve category slug -> id.
+  let categoryId: string | null = null
+  if (opts.categorySlug) {
+    const { data: cat } = await setup.client.from("categories").select("id").eq("slug", opts.categorySlug).limit(1)
+    categoryId = cat?.[0]?.id ?? null
+    if (!categoryId) return emptyResult(empty)
+  }
+
+  let query = setup.client
+    .from("marketplace_listings")
+    .select("*", { count: "exact" })
+    .in("status", ["published", "under_offer", "sold"])
+    .not("published_at", "is", null)
+
+  if (categoryId) query = query.eq("category_id", categoryId)
+  if (opts.condition) query = query.eq("condition", opts.condition as never)
+  if (typeof opts.minPrice === "number") query = query.gte("price", opts.minPrice)
+  if (typeof opts.maxPrice === "number") query = query.lte("price", opts.maxPrice)
+  if (opts.q) query = query.or(`title.ilike.%${opts.q.replace(/[%_]/g, "")}%,description.ilike.%${opts.q.replace(/[%_]/g, "")}%`)
+
+  if (opts.sort === "price-low") query = query.order("price", { ascending: true, nullsFirst: false })
+  else if (opts.sort === "price-high") query = query.order("price", { ascending: false, nullsFirst: false })
+  else query = query.order("published_at", { ascending: false })
+
+  const from = (page - 1) * perPage
+  query = query.range(from, from + perPage - 1)
+
+  const { data, error, count } = await query
+  if (error) return emptyResult(empty, error.message)
+
+  const rows = data ?? []
+  const [sellers, categories, images] = await Promise.all([
+    sellerMap(rows.map((r) => r.seller_account_id)),
+    categoryMap(rows.map((r) => r.category_id ?? "")),
+    imagesFor("marketplace_listing_id", rows.map((r) => r.id)),
+  ])
+  const total = count ?? 0
+  return emptyResult({
+    items: rows.map((r) => mapMarketplaceCard(r, sellers.get(r.seller_account_id), categories.get(r.category_id ?? ""), images.get(r.id))),
+    total,
+    page,
+    perPage,
+    totalPages: Math.max(1, Math.ceil(total / perPage)),
+  })
+}
+
 export async function getHorseAuctions(limit = 12): Promise<QueryResult<HorseAuctionCard[]>> {
   const setup = getClientOrEmpty<HorseAuctionCard[]>([])
   if (setup.result) return setup.result
