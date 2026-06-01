@@ -75,119 +75,124 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
   const liveCount = auctions.length
 
   return (
-    <section className="bg-primary text-primary-foreground">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center">
-          {/* Left: positioning + conversions */}
-          <div>
-            {/* Live-sale signal */}
-            <div className="mb-4 flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-[11px] font-medium text-accent">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-                </span>
-                {liveCount > 0 ? `Live now · ${liveCount} lot${liveCount === 1 ? "" : "s"} open` : "Sale ring opening soon"}
+    <section className="relative isolate overflow-hidden bg-champagne text-foreground">
+      {/* Cinematic horse image faded into the warm background from the right */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute right-0 top-0 h-full w-full lg:w-[62%]">
+          <Image
+            src={assetPath("/thekingman.jpg")}
+            alt=""
+            fill
+            priority
+            className="object-cover object-center"
+          />
+          {/* Soft overlays: fade to champagne on the left + lift the bottom */}
+          <div className="absolute inset-0 bg-gradient-to-r from-champagne via-champagne/85 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-champagne/70 via-transparent to-champagne/20" />
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
+        <div className="max-w-2xl">
+          {/* Live-sale signal */}
+          <div className="mb-6 flex flex-wrap items-center gap-2.5">
+            <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-medium tracking-wide text-gold-dark">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
               </span>
-              {countdown && countdown !== "closing" && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary-foreground/20 px-2.5 py-1 text-[11px] text-primary-foreground/80">
-                  <Clock className="h-3 w-3 text-accent" />
-                  Closes in <span className="font-mono tabular-nums text-primary-foreground">{countdown}</span>
-                </span>
-              )}
-            </div>
-
-            <p className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.2em] text-accent mb-3">
-              Online auctions for standardbred bloodstock
-            </p>
-            <h1 className="font-cinzel text-3xl sm:text-5xl lg:text-6xl font-semibold leading-[1.06] tracking-tight text-balance">
-              Where champions <span className="text-accent">change hands</span>
-            </h1>
-            <p className="mt-4 text-sm sm:text-base text-primary-foreground/75 max-w-xl leading-relaxed">
-              Live online auctions for standardbred racehorses, broodmares, yearlings and
-              shares — every lot with a verified pedigree, and the sale ring at your fingertips.
-            </p>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/register">
-                <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm">
-                  <Gavel className="mr-2 h-4 w-4" />
-                  Register to bid
-                </Button>
-              </Link>
-              <Link href="/sell/horse">
-                <Button size="lg" variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10">
-                  Sell a horse
-                </Button>
-              </Link>
-            </div>
-
-            {/* Search */}
-            <form action="/search" className="mt-5 max-w-md relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                name="q"
-                type="search"
-                placeholder="Search horses, equipment, services…"
-                className="h-11 bg-card text-foreground placeholder:text-muted-foreground pl-10 rounded-sm border-0 shadow-sm"
-              />
-            </form>
+              {liveCount > 0 ? `Live now · ${liveCount} lot${liveCount === 1 ? "" : "s"} open` : "Sale ring opening soon"}
+            </span>
+            {countdown && countdown !== "closing" && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1 text-[11px] text-muted-foreground">
+                <Clock className="h-3 w-3 text-accent" />
+                Closes in <span className="font-mono tabular-nums text-foreground">{countdown}</span>
+              </span>
+            )}
           </div>
 
-          {/* Right: featured live lots */}
-          <div className="lg:pl-8 lg:border-l lg:border-primary-foreground/15">
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-sans text-[11px] uppercase tracking-[0.16em] text-accent">Featured lots</span>
-              <Link href="/auctions" className="text-[11px] text-primary-foreground/70 hover:text-accent flex items-center gap-1">
-                All auctions <ChevronRight className="h-3 w-3" />
-              </Link>
-            </div>
+          <p className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.24em] text-gold-dark mb-5">
+            Online auctions for standardbred bloodstock
+          </p>
+          <h1 className="font-cinzel text-4xl sm:text-6xl lg:text-7xl font-medium leading-[1.04] tracking-tight text-balance text-primary">
+            Where champions
+            <span className="block italic text-gold-dark">change hands</span>
+          </h1>
+          <p className="mt-6 text-base sm:text-lg text-ink-soft/80 max-w-xl leading-relaxed">
+            Live online auctions for standardbred racehorses, broodmares, yearlings and
+            shares — every lot with a verified pedigree, and the sale ring at your fingertips.
+          </p>
 
-            {auctions.length === 0 ? (
-              <div className="rounded-sm border border-primary-foreground/15 p-5 text-sm text-primary-foreground/70">
-                No lots are open right now. Browse upcoming sale events and catalogues.
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/register">
+              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm rounded-sm">
+                <Gavel className="mr-2 h-4 w-4" />
+                Register to bid
+              </Button>
+            </Link>
+            <Link href="/sell/horse">
+              <Button size="lg" variant="outline" className="border-primary/30 text-primary hover:bg-primary/5 rounded-sm">
+                Sell a horse
+              </Button>
+            </Link>
+          </div>
+
+          {/* Search */}
+          <form action="/search" className="mt-7 max-w-md relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              name="q"
+              type="search"
+              placeholder="Search horses, equipment, services…"
+              className="h-12 bg-card/90 backdrop-blur text-foreground placeholder:text-muted-foreground pl-10 rounded-sm border border-border shadow-sm"
+            />
+          </form>
+
+          {/* Featured lots — slim inline row, elegant on the warm ground */}
+          {auctions.length > 0 && (
+            <div className="mt-10">
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-sans text-[11px] uppercase tracking-[0.18em] text-gold-dark">Featured lots</span>
+                <Link href="/auctions" className="text-[11px] text-muted-foreground hover:text-primary flex items-center gap-1">
+                  All auctions <ChevronRight className="h-3 w-3" />
+                </Link>
               </div>
-            ) : (
-              <ul className="space-y-2">
+              <ul className="grid sm:grid-cols-3 gap-2.5">
                 {auctions.slice(0, 3).map((a) => (
                   <li key={a.id}>
                     <Link
                       href={`/auctions/${a.id}`}
-                      className="flex items-center gap-3 rounded-sm border border-primary-foreground/15 bg-primary-foreground/[0.06] p-2.5 hover:border-accent transition-colors"
+                      className="flex items-center gap-2.5 rounded-sm border border-border bg-card/85 backdrop-blur p-2.5 shadow-sm hover:border-accent transition-colors"
                     >
-                      <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-sm bg-primary-foreground/10">
+                      <div className="relative h-11 w-14 shrink-0 overflow-hidden rounded-sm bg-muted">
                         <Image src={a.image} alt={a.name} fill className="object-cover" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium text-sm text-primary-foreground">{a.name}</p>
-                        <p className="text-[11px] text-primary-foreground/60">{a.endTime} · {a.bids} bids</p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-[9px] uppercase tracking-wider text-primary-foreground/55">Current</p>
-                        <p className="font-mono font-semibold text-sm text-accent tabular-nums">{formatCurrency(a.currentBid)}</p>
+                        <p className="truncate font-medium text-[13px] text-foreground">{a.name}</p>
+                        <p className="font-mono text-xs text-gold-dark tabular-nums">{formatCurrency(a.currentBid)}</p>
                       </div>
                     </Link>
                   </li>
                 ))}
               </ul>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Trust / credibility strip — Inglis "ID transfer" + TradingRing "extended pedigree" */}
-      <div className="border-t border-primary-foreground/15 bg-primary">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs sm:text-[13px] text-primary-foreground/80">
-          <span className="flex items-center gap-2">
-            <BadgeCheck className="h-4 w-4 text-accent shrink-0" /> Verified bidders
+      {/* Trust / credibility strip — content unchanged; refined spacing + light theme */}
+      <div className="relative border-t border-border bg-stone/70 backdrop-blur-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-center gap-x-10 gap-y-2.5 text-xs sm:text-[13px] text-ink-soft/80">
+          <span className="flex items-center gap-2.5">
+            <BadgeCheck className="h-[18px] w-[18px] text-accent shrink-0" strokeWidth={1.75} /> Verified bidders
           </span>
-          <span className="hidden sm:inline text-primary-foreground/25">·</span>
-          <span className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-accent shrink-0" /> Professional extended pedigree on every lot
+          <span className="hidden sm:inline text-border">·</span>
+          <span className="flex items-center gap-2.5">
+            <FileText className="h-[18px] w-[18px] text-accent shrink-0" strokeWidth={1.75} /> Professional extended pedigree on every lot
           </span>
-          <span className="hidden sm:inline text-primary-foreground/25">·</span>
-          <span className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-accent shrink-0" /> Secure ownership &amp; ID transfer
+          <span className="hidden sm:inline text-border">·</span>
+          <span className="flex items-center gap-2.5">
+            <ShieldCheck className="h-[18px] w-[18px] text-accent shrink-0" strokeWidth={1.75} /> Secure ownership &amp; ID transfer
           </span>
         </div>
       </div>
@@ -228,7 +233,7 @@ export function FeaturedHorseAuctions({ auctions }: { auctions: HorseAuctionCard
           )}
           {auctions.map((auction) => (
             <Link key={auction.id} href={`/auctions/${auction.id}`}>
-              <Card className="group overflow-hidden border-border bg-card card-hover cursor-pointer rounded-sm shadow-sm">
+              <Card className="group overflow-hidden border-border bg-card card-hover cursor-pointer rounded-lg shadow-sm">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image src={auction.image} alt={auction.name} fill className="object-cover" />
                   <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground font-medium rounded-sm">
@@ -353,7 +358,7 @@ export function LatestMarketplaceListings({
           )}
           {listings.map((listing) => (
             <Link key={listing.id} href={`/marketplace/${listing.id}`}>
-              <Card className="group overflow-hidden border-border bg-card card-hover cursor-pointer rounded-sm shadow-sm">
+              <Card className="group overflow-hidden border-border bg-card card-hover cursor-pointer rounded-lg shadow-sm">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image src={listing.image} alt={listing.title} fill className="object-cover" />
                   <Badge className="absolute top-3 left-3 bg-card text-foreground text-xs rounded-sm border border-border">
@@ -457,20 +462,20 @@ export function TrustStrip() {
 /* ------------------------------------------------------------------------- */
 export function SellerCTA() {
   return (
-    <section className="py-14 lg:py-20 bg-primary text-primary-foreground border-t border-border">
+    <section className="py-14 lg:py-20 bg-stone border-t border-border">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
         <div>
-          <p className="font-sans text-xs uppercase tracking-[0.18em] text-accent mb-3">For sellers</p>
-          <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-semibold mb-4">
+          <p className="font-sans text-xs uppercase tracking-[0.2em] text-gold-dark mb-3">For sellers</p>
+          <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-medium text-primary mb-4">
             Ready to sell?
           </h2>
-          <p className="text-primary-foreground/80 mb-7 leading-relaxed max-w-lg">
+          <p className="text-ink-soft/80 mb-7 leading-relaxed max-w-lg">
             List horses, equipment, or services to trainers, breeders, and bloodstock
             professionals worldwide. Register as a seller to get started.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/sell/horse">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm">
                 <Gavel className="mr-2 h-4 w-4" />
                 Sell a horse
               </Button>
@@ -479,7 +484,7 @@ export function SellerCTA() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
+                className="border-primary/30 text-primary hover:bg-primary/5 rounded-sm"
               >
                 <ShoppingBag className="mr-2 h-4 w-4" />
                 List equipment
@@ -488,16 +493,16 @@ export function SellerCTA() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-px bg-primary-foreground/15 rounded-sm overflow-hidden border border-primary-foreground/15">
+        <div className="grid grid-cols-2 gap-px bg-border rounded-sm overflow-hidden border border-border">
           {[
             ["Standardbred focus", "Pacers, trotters, yearlings, broodmares"],
             ["Live + timed auctions", "Proxy bidding and soft-close"],
             ["Enterprise consignors", "APG, Nutrien, Tattersalls and more"],
             ["Global reach", "Buyers across AU, NZ and worldwide"],
           ].map(([t, d]) => (
-            <div key={t} className="bg-primary p-5">
-              <p className="font-medium text-primary-foreground text-sm">{t}</p>
-              <p className="text-xs text-primary-foreground/65 mt-1">{d}</p>
+            <div key={t} className="bg-card p-5">
+              <p className="font-medium text-foreground text-sm">{t}</p>
+              <p className="text-xs text-muted-foreground mt-1">{d}</p>
             </div>
           ))}
         </div>

@@ -69,6 +69,10 @@
   --gold: #E0A33C;
   --gold-light: #EBC176;
   --gold-dark: #C2862A;
+  /* Warm editorial neutrals (premium redesign) */
+  --stone: #EFE9DF;       /* warm stone panel */
+  --champagne: #F7F2E9;   /* lightest warm off-white */
+  --ink-soft: #2A3242;    /* softened ink for body copy */
 }
 
 .dark {
@@ -154,6 +158,9 @@
   --color-gold: var(--gold);
   --color-gold-light: var(--gold-light);
   --color-gold-dark: var(--gold-dark);
+  --color-stone: var(--stone);
+  --color-champagne: var(--champagne);
+  --color-ink-soft: var(--ink-soft);
 }
 
 @layer base {
