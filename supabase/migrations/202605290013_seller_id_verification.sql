@@ -40,7 +40,7 @@ create policy "Owners delete own id docs"
   on storage.objects for delete to authenticated
   using (bucket_id = 'seller-id-documents' and (storage.foldername(name))[1] = auth.uid()::text);
 -- (Staff access to documents is done server-side with the service role, which
---  bypasses these policies — so no broad staff storage policy is needed.)
+--  bypasses these policies - so no broad staff storage policy is needed.)
 
 -- 2) Verification request record.
 create type public.id_doc_type as enum ('drivers_license', 'passport', 'national_id', 'other');
