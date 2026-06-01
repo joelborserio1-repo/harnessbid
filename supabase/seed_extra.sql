@@ -1,10 +1,10 @@
--- HarnessBid — EXTRA demo data (additive, idempotent). Run AFTER seed.sql.
+-- HarnessBid - EXTRA demo data (additive, idempotent). Run AFTER seed.sql.
 -- Adds more login-able test users, sellers, realistic standardbred horse
 -- listings + equipment, auctions, bids from several buyers, and images so the
 -- front and back end can be exercised with a fuller catalogue.
 --
 -- All content is ORIGINAL (real sire/dam *lines* used the way the industry does,
--- but descriptions are written fresh — not copied from any platform).
+-- but descriptions are written fresh - not copied from any platform).
 -- LOCAL / STAGING / DEMO ONLY. Token columns set to '' (GoTrue requires non-null).
 
 -- ===========================================================================
@@ -31,7 +31,7 @@ update public.profiles set role='buyer' where id in (
 );
 
 -- ===========================================================================
--- Extra named sellers (studs / agents) — login-able
+-- Extra named sellers (studs / agents) - login-able
 -- ===========================================================================
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password,
   email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
@@ -85,14 +85,14 @@ select
   case when g % 2 = 1 then 12000 + g * 850 else null end,
   (array[
     'Strong-gaited youngster with an excellent attitude and natural early speed.',
-    'Tried winner ready to step up in grade — sound and racing in great order.',
+    'Tried winner ready to step up in grade - sound and racing in great order.',
     'Beautifully bred filly from a prolific producing family. Future broodmare prospect.',
     'Honest trotting type with good manners and a genuine will to win.'
   ])[1 + (g % 4)],
   (array[
     'Presented in outstanding order and working a treat at the trials. This one shows above-average gate speed and a high cruising tempo, with the temperament to match. Vet records and recent x-rays available to genuine buyers. An exciting prospect for a progressive stable.',
     'A racetrack-proven performer with multiple wins and consistent place form against quality fields. Eats well, travels well, and has never missed a beat. Suit an owner looking to step straight into the winners'' circle.',
-    'From one of the breed''s most influential maternal families, this individual has the page to back up the looks. Correct, mobile and forward — exactly the kind of type that develops into a stakes-class performer or foundation broodmare.',
+    'From one of the breed''s most influential maternal families, this individual has the page to back up the looks. Correct, mobile and forward - exactly the kind of type that develops into a stakes-class performer or foundation broodmare.',
     'A genuine, no-fuss racehorse with a great constitution. Strong through the line and improving with every run. Ready to continue racing immediately or carry on as a breeding proposition down the track.'
   ])[1 + (g % 4)],
   (array['Menangle, NSW','Bendigo, VIC','Christchurch, NZ','Toowoomba, QLD','Cranbourne, VIC'])[1 + (g % 5)],
@@ -126,11 +126,11 @@ select
   sa.id,
   cat.id,
   (array[
-    'Carbon-fibre race bike — lightweight & track-ready',
+    'Carbon-fibre race bike - lightweight & track-ready',
     'Set of quality leather race harness, well maintained',
     'Composite training jogger, near new condition',
     'Full set of pacing hopples with spare straps',
-    'Aluminium float — twin-horse angle load',
+    'Aluminium float - twin-horse angle load',
     'Stable safety helmet, certified and barely used',
     'Heavy-duty walking machine, six-horse',
     'Bulk supply of premium racing feed & supplements'
@@ -139,9 +139,9 @@ select
   (array['published','published','published','under_offer','sold'])[1 + (g % 5)]::public.listing_status,
   'buy_now'::public.sale_mode,
   (array[
-    'Well looked-after gear from a working stable. Stored undercover and ready to go straight to work. Genuine reason for sale — upgrading. Inspection welcome and freight can be arranged at buyer''s cost.',
+    'Well looked-after gear from a working stable. Stored undercover and ready to go straight to work. Genuine reason for sale - upgrading. Inspection welcome and freight can be arranged at buyer''s cost.',
     'Quality piece with plenty of life left in it. Maintained to a high standard and cleaned after every use. Pickup preferred but happy to organise transport for the right buyer.',
-    'Reliable, race-proven equipment suited to professional and hobby trainers alike. No issues, sold as-is. Photos show actual item — what you see is what you get.'
+    'Reliable, race-proven equipment suited to professional and hobby trainers alike. No issues, sold as-is. Photos show actual item - what you see is what you get.'
   ])[1 + (g % 3)],
   (array['new','excellent','good','used','fair'])[1 + (g % 5)]::public.marketplace_condition,
   'USD',
