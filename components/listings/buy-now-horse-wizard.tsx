@@ -146,7 +146,7 @@ export function BuyNowHorseWizard({ seller }: { seller: SellerPreviewInfo }) {
             <Input id="price" name="price" inputMode="numeric" required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="videoUrl">Video URL (placeholder)</Label>
+            <Label htmlFor="videoUrl">Video URL (optional)</Label>
             <Input id="videoUrl" name="videoUrl" placeholder="https:// (optional)" />
           </div>
           <div className="space-y-2">

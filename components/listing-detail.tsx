@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Heart,
   MapPin,
   BadgeCheck,
   Truck,
@@ -24,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ShareButton } from "@/components/listings/share-button"
+import { WatchButton } from "@/components/listings/watch-button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
@@ -145,6 +145,8 @@ function ImageGallery({ images }: { images: string[] }) {
 function toEquipmentListingView(data: MarketplaceDetail) {
   return {
     id: data.id,
+    watchId: data.recordId,
+    watchKind: "marketplace" as const,
     title: data.title,
     description: data.description,
     price: data.price,
@@ -178,6 +180,8 @@ function toEquipmentListingView(data: MarketplaceDetail) {
 function toAuctionListingView(data: HorseAuctionDetail) {
   return {
     id: data.id,
+    watchId: data.recordId,
+    watchKind: "horse" as const,
     title: data.title,
     description: data.description,
     currentBid: data.currentBid,
@@ -379,9 +383,7 @@ function ListingInfoCard({ listing }: { listing: ReturnType<typeof toEquipmentLi
                 Contact seller
               </a>
             </Button>
-            <Button variant="outline" size="icon">
-              <Heart className="h-5 w-5" />
-            </Button>
+            <WatchButton listingId={listing.watchId} kind={listing.watchKind} variant="icon" />
             <ShareButton title={listing.title} variant="icon" />
           </div>
 
@@ -668,10 +670,7 @@ function AuctionInfoCard({
           )}
 
           <div className="flex gap-2">
-            <Button variant="outline" className="flex-1">
-              <Heart className="mr-2 h-4 w-4" />
-              Watch
-            </Button>
+            <WatchButton listingId={listing.watchId} kind={listing.watchKind} variant="full" />
             <ShareButton title={listing.title} variant="icon" />
           </div>
 

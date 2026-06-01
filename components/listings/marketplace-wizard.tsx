@@ -142,7 +142,7 @@ export function MarketplaceWizard({
           </label>
           <label className="flex items-center gap-3 text-sm text-foreground">
             <input type="checkbox" name="featured" className="h-4 w-4 rounded border-input" />
-            Request featured placement (placeholder)
+            Request featured placement
           </label>
           <div className="space-y-2">
             <Label htmlFor="sellerNotes">Seller notes</Label>
