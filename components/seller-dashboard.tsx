@@ -22,6 +22,46 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EnterpriseRequestCard } from "@/components/enterprise-request-card"
 import type { SellerAuctionItem } from "@/lib/auctions/dashboard"
 import type { SellerBillingSummary } from "@/lib/payments/queries"
+import type { OwnedListing, OwnedListingBuckets } from "@/lib/listings/queries"
+
+function formatPrice(n: number | null) {
+  if (!n) return "POA"
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n)
+}
+
+function ListingRow({ listing }: { listing: OwnedListing }) {
+  const href =
+    listing.kind === "horse"
+      ? listing.saleMode === "auction"
+        ? `/auctions/${listing.slug}`
+        : `/horses/buy-now/${listing.slug}`
+      : `/marketplace/${listing.slug}`
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-3">
+      <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-sm bg-muted">
+        {listing.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={listing.image} alt={listing.title} className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center"><Package className="h-4 w-4 text-muted-foreground" /></div>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-foreground">{listing.title}</p>
+        <p className="text-xs text-muted-foreground capitalize">
+          {listing.kind} · {listing.saleMode.replace(/_/g, " ")} · {listing.views} views · {listing.watchers} watching
+        </p>
+      </div>
+      <span className="shrink-0 font-mono text-sm tabular-nums text-foreground">{formatPrice(listing.price)}</span>
+      <Link href={href} className="shrink-0 text-xs font-medium text-primary hover:text-primary/80">View</Link>
+    </div>
+  )
+}
+
+function ListingBucket({ items }: { items: OwnedListing[] }) {
+  if (items.length === 0) return <ListingsEmptyState />
+  return <div className="space-y-2">{items.map((l) => <ListingRow key={`${l.kind}-${l.id}`} listing={l} />)}</div>
+}
 
 export type SellerDashboardData = {
   name: string
@@ -189,10 +229,12 @@ export function SellerDashboard({
   seller,
   auctions = [],
   billing,
+  listings,
 }: {
   seller: SellerDashboardData
   auctions?: SellerAuctionItem[]
   billing?: SellerBillingSummary | null
+  listings?: OwnedListingBuckets
 }) {
   const verification = VERIFICATION_COPY[seller.verificationStatus] ?? VERIFICATION_COPY.unverified
   const storefrontHref = `/seller/${seller.slug}`
@@ -255,12 +297,12 @@ export function SellerDashboard({
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Stats Grid (placeholders until listings are connected) */}
+        {/* Stats Grid — real counts from the seller's listings */}
         <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <StatCard icon={Package} value="0" label="Active Listings" />
-          <StatCard icon={FileText} value="0" label="Drafts" />
-          <StatCard icon={Eye} value="0" label="Total Views" />
-          <StatCard icon={Heart} value="0" label="Watchers" />
+          <StatCard icon={Package} value={String((listings?.active.length ?? 0))} label="Active Listings" />
+          <StatCard icon={FileText} value={String((listings?.drafts.length ?? 0))} label="Drafts" />
+          <StatCard icon={Eye} value={String((listings?.all ?? []).reduce((s, l) => s + (l.views ?? 0), 0))} label="Total Views" />
+          <StatCard icon={Heart} value={String((listings?.all ?? []).reduce((s, l) => s + (l.watchers ?? 0), 0))} label="Watchers" />
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
@@ -278,13 +320,13 @@ export function SellerDashboard({
                     <TabsTrigger value="sold">Sold</TabsTrigger>
                   </TabsList>
                   <TabsContent value="active">
-                    <ListingsEmptyState />
+                    <ListingBucket items={listings?.active ?? []} />
                   </TabsContent>
                   <TabsContent value="drafts">
-                    <ListingsEmptyState />
+                    <ListingBucket items={listings?.drafts ?? []} />
                   </TabsContent>
                   <TabsContent value="sold">
-                    <ListingsEmptyState />
+                    <ListingBucket items={listings?.sold ?? []} />
                   </TabsContent>
                 </Tabs>
               </CardContent>

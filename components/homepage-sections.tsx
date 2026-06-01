@@ -76,20 +76,22 @@ export function HeroSection({ auctions = [] }: { auctions?: HorseAuctionCard[] }
 
   return (
     <section className="relative isolate overflow-hidden bg-champagne text-foreground">
-      {/* Cinematic horse image faded subtly behind the whole hero so the
-          two-column content (text + featured lots) stays fully readable. */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <Image
-          src={assetPath("/thekingman.jpg")}
-          alt=""
-          fill
-          priority
-          className="object-cover object-center"
-        />
-        {/* Light champagne veil + left fade so the text column stays legible
-            while the photo shows almost fully. */}
-        <div className="absolute inset-0 bg-gradient-to-r from-champagne/85 via-champagne/45 to-champagne/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-champagne/45 via-transparent to-transparent" />
+      {/* Photo confined to the RIGHT half and clearly visible; the LEFT stays
+          solid champagne so the headline/CTAs are always readable. The seam
+          between them is feathered so it reads cinematic, not boxed. */}
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-champagne">
+        <div className="absolute right-0 top-0 hidden h-full w-1/2 lg:block">
+          <Image
+            src={assetPath("/thekingman.jpg")}
+            alt=""
+            fill
+            priority
+            className="object-cover object-center"
+          />
+          {/* Feather the left edge of the photo into the champagne ground */}
+          <div className="absolute inset-0 bg-gradient-to-r from-champagne via-champagne/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-champagne/40 via-transparent to-transparent" />
+        </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">

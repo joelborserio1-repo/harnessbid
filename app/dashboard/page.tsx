@@ -5,6 +5,7 @@ import { SellerDashboard } from "@/components/seller-dashboard"
 import { getOwnedSellerContext, getSessionUser } from "@/lib/supabase/auth-server"
 import { getSellerAuctionSummary } from "@/lib/auctions/dashboard"
 import { getSellerBillingSummary } from "@/lib/payments/queries"
+import { getOwnedListings } from "@/lib/listings/queries"
 
 // Auth depends on per-request cookies; never statically prerender.
 export const dynamic = "force-dynamic"
@@ -24,9 +25,10 @@ export default async function DashboardPage() {
   const seller = await getOwnedSellerContext()
   if (!seller) redirect("/onboarding")
 
-  const [auctions, billing] = await Promise.all([
+  const [auctions, billing, listings] = await Promise.all([
     getSellerAuctionSummary(),
     getSellerBillingSummary(),
+    getOwnedListings(),
   ])
 
   return (
@@ -54,6 +56,7 @@ export default async function DashboardPage() {
           }}
           auctions={auctions}
           billing={billing}
+          listings={listings}
         />
       </main>
       <Footer />
